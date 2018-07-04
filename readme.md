@@ -12,7 +12,7 @@ It provides the .NET implementation of the [Dynatrace OneAgent SDK](https://gith
 
 ## Features
 Dynatrace OneAgent SDK for .NET currently implements support for the following features (corresponding to features specified in [Dynatrace OneAgent SDK](https://github.com/Dynatrace/OneAgent-SDK)):
--  database calls
+-  database calls (including async database calls)
 
 ## Documentation
 The reference documentation is included in this package. The most recent version is also available online at 
@@ -30,11 +30,11 @@ The Dynatrace OneAgent SDK for .NET has no further dependencies.
 
 ### Troubleshooting
 
-TODO
+
 
 ## OneAgent SDK for .NET Requirements
 
-- JRE 1.6 or higher
+- Any .NET Full framework or .NET Core version that supports .NET Standard 1.0
 - Dynatrace OneAgent .NET (supported versions see below)
 
 # API Concepts
@@ -76,12 +76,8 @@ void End();
 The second purpose of a Tracer is to allow tracing across process boundaries. To achieve that these kind of traces supply so called tags. Tags are strings or byte arrays that enable Dynatrace to trace a transaction end to end. As such the tag is the one information that you need to transport across these calls yourselfs.
 
 
-## Using the Dynatrace OneAgent SDK to trace remote calls
-
-TODO
-
 ### Compatibility OneAgent SDK for .NET releases with OneAgent for .NET releases
-Not release yet
+OneAgent 150
 
 ## Feedback
 
