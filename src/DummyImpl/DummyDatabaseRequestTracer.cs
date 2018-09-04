@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
-	class DummyDatabaseRequestTracer : IDatabaseRequestTracer
+	internal class DummyDatabaseRequestTracer : IDatabaseRequestTracer
 	{
 		public void End()
 		{
@@ -30,7 +30,7 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 
 		public void StartAsync()
 		{
-			
+
 		}
 
 		public void Trace(Action action)

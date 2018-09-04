@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Dynatrace.OneAgent.Sdk.Api {
-	public interface IIncomingWebRequestTracer: ITracer, IIncomingTaggable {
+namespace Dynatrace.OneAgent.Sdk.Api
+{
+	public interface IIncomingWebRequestTracer : ITracer, IIncomingTaggable
+	{
 
 		void SetRemoteAddress(string remoteAddress);
 

@@ -7,7 +7,7 @@ using Dynatrace.OneAgent.Sdk.Api.Infos;
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
 
-	class DummyDatabaseInfo : IDatabaseInfo
+	internal class DummyDatabaseInfo : IDatabaseInfo
 	{
 		public DummyDatabaseInfo()
 		{

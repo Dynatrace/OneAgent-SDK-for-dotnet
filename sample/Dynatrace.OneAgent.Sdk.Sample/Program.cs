@@ -4,9 +4,9 @@ using Dynatrace.OneAgent.Sdk.Api;
 
 namespace Dynatrace.OneAgent.Sdk.Sample
 {
-	class Program
+	public class Program
 	{
-		static void Main(string[] args)
+		public static void Main(string[] args)
 		{
 			Console.WriteLine("Enter test name");
 			var testName = Console.ReadLine();
@@ -55,6 +55,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 			if (testName == "Sync_Exception_Lambda_And_Async_NoException_Lambda")
 			{
 				DatabaseRequestTracerSamples.Sync_Exception_Lambda_And_Async_NoException_Lambda().Wait();
+			}
+
+			if(testName == "SimpleIncomingRemoting")
+			{
+				RemoteCallTracerSamples.SimpleIncomingRemoting();
 			}
 
 			Console.WriteLine("Done, press any key to exit");

@@ -75,7 +75,6 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 			var instance = OneAgentSdkFactory.CreateInstance();
 			var dbinfo = instance.CreateDatabaseInfo("MyDb", "MyVendor", Dynatrace.OneAgent.Sdk.Api.Enums.ChannelType.TCP_IP, "MyChannelEndpoint");
 			var dbTracer = instance.TraceSQLDatabaseRequest(dbinfo, "Select * From AA");
-			dbTracer.Start();
 
 			var res = dbTracer.Trace(() => IntMethod());
 		}
@@ -158,7 +157,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 			{
 				await dbTracer.Trace(() => VoidTaskWithException());
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Console.WriteLine($"Exception in {nameof(Async_Exception_Lambda_And_Async_Exception_Lambda)}, Message: {e.Message}");
 			}
@@ -197,7 +196,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 				Console.WriteLine($"Exception in {nameof(Async_NoException_Lambda_And_Sync_Exception_Lambda)}, Message: {e.Message}");
 			}
 		}
-		
+
 		public static async Task Sync_Exception_Lambda_And_Async_NoException_Lambda()
 		{
 			var instance = OneAgentSdkFactory.CreateInstance();
@@ -216,10 +215,10 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 			var instance2 = OneAgentSdkFactory.CreateInstance();
 			var dbinfo2 = instance2.CreateDatabaseInfo("MyDb2", "MyVendor2", Dynatrace.OneAgent.Sdk.Api.Enums.ChannelType.TCP_IP, "MyChannelEndpoint");
 			var dbTracer2 = instance2.TraceSQLDatabaseRequest(dbinfo2, "Select2 * From AA");
-			
+
 			var result = await dbTracer2.Trace(() => IntTask());
 		}
-		
+
 		#region DbCalls
 		//these methods simulate DB calls. Imagine that these are methods on a class which is an API to a database.
 		public static async Task VoidTask() => await Task.Delay(500); //async void

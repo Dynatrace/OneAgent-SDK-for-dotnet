@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
-	class DummyIncomingRemoteCallTracer : IIncomingRemoteCallTracer {
+	internal class DummyIncomingRemoteCallTracer : IIncomingRemoteCallTracer
+	{
 		public void End()
 		{
 		}

@@ -5,13 +5,15 @@ using System.Text;
 using Dynatrace.OneAgent.Sdk.Api.Enums;
 using Dynatrace.OneAgent.Sdk.Api.Infos;
 
-namespace Dynatrace.OneAgent.Sdk.Api {
+namespace Dynatrace.OneAgent.Sdk.Api
+{
 
 	/// <summary>
 	/// Interface implemented by OneAgentSDK. Retrieved by OneAgentSdkFactory.CreateInstance(). For details see:
 	/// <a href="https://github.com/Dynatrace/OneAgent-SDK#oneagentsdkobject">https://github.com/Dynatrace/OneAgent-SDK#oneagentsdkobject</a>
 	/// </summary>
-	public interface IOneAgentSdk {
+	public interface IOneAgentSdk
+	{
 
 		IIncomingRemoteCallTracer TraceIncomingRemoteCall(String serviceMethod, String serviceName, String serviceEndpoint);
 

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Dynatrace.OneAgent.Sdk.Api {
+namespace Dynatrace.OneAgent.Sdk.Api
+{
 	/// <summary>
 	///  Common interface for incoming requests which include linking.
 	///  Not to be	directly used by SDK user.
 	/// </summary>
-	public interface IIncomingTaggable {
+	public interface IIncomingTaggable
+	{
 
 		/// <summary>
 		///  Sets the tag using the string format.
