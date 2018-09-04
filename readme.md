@@ -36,7 +36,7 @@ This is the official .NET implementation of the [Dynatrace OneAgent SDK](https:/
 
 |OneAgent SDK for .NET|Required OneAgent version|
 |:-----------------------|:------------------------|
-|1.0.x                   |>=1.153                  |
+|1.0.x                   |>=1.150                  |
 
 ## Integration
 
@@ -46,7 +46,7 @@ Using this SDK should not cause any errors if no OneAgent is present (e.g. in te
 
 If you want to integrate the OneAgent SDK into your application, just add the following NuGet dependency:
 
-TODO: Package is not yet published
+[Dynatrace.OneAgent.Sdk NuGet package](https://www.nuget.org/packages/Dynatrace.OneAgent.Sdk)
 
 The Dynatrace OneAgent SDK for .NET has no further dependencies.
 
