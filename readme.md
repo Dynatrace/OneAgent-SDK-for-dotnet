@@ -36,7 +36,7 @@ This is the official .NET implementation of the [Dynatrace OneAgent SDK](https:/
 
 |OneAgent SDK for .NET|Required OneAgent version|
 |:-----------------------|:------------------------|
-|1.0.x                   |>=1.150                  |
+|1.0.x                   |>=1.153                  |
 
 ## Integration
 
