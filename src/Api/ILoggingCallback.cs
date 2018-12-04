@@ -14,23 +14,24 @@
 // limitations under the License.
 //
 
-using Dynatrace.OneAgent.Sdk.Api.DummyImpl;
-
 namespace Dynatrace.OneAgent.Sdk.Api
 {
-    /// <summary>
-    /// Factory for retrieving instances of <see cref="IOneAgentSdk"/>
-    /// </summary>
-    public class OneAgentSdkFactory
+	/// <summary>
+	/// Logging-Callback gets called only inside a OneAgentSDK API call when error/warning has occurred.
+	/// NB: Never call any SDK API, when inside one of this callback methods.
+	/// </summary>
+	public interface ILoggingCallback
 	{
+		/// <summary>
+		/// Just warning. Something is missing, but agent is working normal.
+		/// </summary>
+		/// <param name="message">Warning message text. Never null</param>
+		void Warn(string message);
 
 		/// <summary>
-		/// This method returns an instance of the OneAgent SDK.
+		/// Something that should be done can't be done. (e. g. path couldn't be started).
 		/// </summary>
-		/// <returns></returns>
-		public static IOneAgentSdk CreateInstance()
-		{
-			return new OneAgentSdkDummy();
-		}
+		/// <param name="message">Error message text. Never null</param>
+		void Error(string message);
 	}
 }

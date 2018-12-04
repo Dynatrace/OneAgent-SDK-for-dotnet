@@ -2,7 +2,8 @@
 
 # Dynatrace OneAgent SDK for .NET
 
-This SDK allows Dynatrace customers to instrument .NET applications. This is useful to enhance the visibility for proprietary frameworks or custom frameworks not directly supported by [Dynatrace OneAgent](https://www.dynatrace.com/technologies/net-monitoring/) out-of-the-box.
+This SDK allows Dynatrace customers to instrument .NET applications. This is useful to enhance the visibility for proprietary frameworks
+or custom frameworks not directly supported by [Dynatrace OneAgent](https://www.dynatrace.com/technologies/net-monitoring/) out-of-the-box.
 
 This is the official .NET implementation of the [Dynatrace OneAgent SDK](https://github.com/Dynatrace/OneAgent-SDK). 
 
@@ -18,25 +19,30 @@ This is the official .NET implementation of the [Dynatrace OneAgent SDK](https:/
   * [Tracers](#tracers)
 * [Features](#features)
   * [Trace SQL database requests](#trace-sql-database-requests)
-* [Administrative Apis](#administrative-apis)
+  * [Trace remote calls](#trace-remote-calls)
+  * [Logging callback](#logging-callback)
 * [Further reading](#further-readings)
-* [Help & Support](#help-support)
+* [Help & Support](#help--support)
 * [Release notes](#release-notes)
 
 ## Package contents
 
-* `samples`: sample applications, which demonstrates the usage of the SDK.
-* `src`: source code of the SDK
-* `LICENSE`: license under which the whole SDK and sample applications are published
+* `samples`: sample application which demonstrates the usage of the SDK
+* `src`: source code of the SDK (API and implementation stub - for reference only, not intended to be edited/extended/built by the user)
+* `LICENSE`: license under which the SDK and sample applications are published
+
+The SDK implementation is provided by the installed OneAgent at runtime. The classes in `src/DummyImpl` are a stub that is used if no
+OneAgent is installed on the host so that your application is not affected by any missing OneAgent dependency.
 
 ## Requirements
 
 * Dynatrace OneAgent (required versions see below)
-* Any .NET Full framework or .NET Core version that supports .NET Standard 1.0
+* .NET Full Framework >= 4.5 or .NET Core >= 1.0 (the SDK is built using .NET Standard 1.0)
 
 |OneAgent SDK for .NET|Required OneAgent version|
 |:-----------------------|:------------------------|
-|1.0.x                   |>=1.153                  |
+|1.0.0-alpha             |1.153-1.155              |
+|1.1.0-alpha             |>=1.157                  |
 
 ## Integration
 
@@ -50,28 +56,29 @@ If you want to integrate the OneAgent SDK into your application, just add the fo
 
 The Dynatrace OneAgent SDK for .NET has no further dependencies.
 
-
 ### Troubleshooting
 
 * Make sure OneAgent is installed and running on the host monitoring your application
 * Make sure process monitoring is enabled
+* Ensure that you have set the OneAgent SDK logging callback and check its output
 
 ## API Concepts
 
 Common concepts of the Dynatrace OneAgent SDK are explained the [Dynatrace OneAgent SDK repository](https://github.com/Dynatrace/OneAgent-SDK).
 
-### OneAgentSDK object
+### IOneAgentSdk object
 
-Use OneAgentSDKFactory.CreateInstance() to obtain an OneAgentSDK instance. You should reuse this object over the whole application and if possible CLR lifetime:
+Use `OneAgentSdkFactory.CreateInstance` to obtain an OneAgentSDK instance.
+You should reuse this object over the whole application and if possible CLR lifetime:
 
 ```csharp
-OneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
 ```
 
 
 ### Tracers
 
-To trace any kind of call you first need to create a Tracer. The Tracer object represents the logical and physical endpoint that you want to call. A Tracer serves two purposes. First to time the call (duraction, cpu and more) and report errors. That is why each Tracer has these three methods. The error method must be called only once, and it must be in between start and end.
+To trace any kind of call you first need to create a Tracer. The Tracer object represents the logical and physical endpoint that you want to call. A Tracer serves two purposes. First to time the call (duration, cpu and more) and report errors. That is why each Tracer has these three methods. The `Error` method must be called only once, and it must be in between `Start` and `End`. Each Tracer can only be used once and you need to create a new instance for each request/call that you want to trace (i.e., `Start` cannot be called twice on the same instance).
 
 
 ```csharp
@@ -91,11 +98,11 @@ Sample usage:
 ```csharp
 public static async Task SampleMethodAsync()
 {
-	var instance = OneAgentSdkFactory.CreateInstance();
-	var dbinfo = instance.CreateDatabaseInfo("MyDb", "MyVendor", Dynatrace.OneAgent.Sdk.Api.Enums.ChannelType.TCP_IP, "MyChannelEndpoint");
-	var dbTracer = instance.TraceSQLDatabaseRequest(dbinfo, "Select * From AA");
+	IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+	IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "MyChannelEndpoint");
+	IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
-	dbTracer.StartAsync(); //instead of Start() we call the StartAsync() method
+	await dbTracer.StartAsync(); // instead of Start() we call the StartAsync() method
 	try
 	{
 		await DatabaseApi.AsyncDatabaseCall();
@@ -110,31 +117,28 @@ public static async Task SampleMethodAsync()
 	}
 }
 ```
-Additionally the .NET OneAgent SDK also offers a convenient Trace() method with multiple overloads. This method can be called in both asynchronous and synchronous methods. In case of an async method you can pass the given async method to the Trace method and await on the result of the Trace method.
+Additionally the SDK also offers a convenient `Trace` method. This method can be called in both asynchronous and synchronous methods. In case of an async method you can pass the given async method to the `TraceAsync` method and await on the result of the `TraceAsync` method.
 
 Sample usage:
 
 ```csharp
 public static async Task SampleMethodAsync()
 {
-	var instance = OneAgentSdkFactory.CreateInstance();
-	var dbinfo = instance.CreateDatabaseInfo("MyDb", "MyVendor",  Dynatrace.OneAgent.Sdk.Api.Enums.ChannelType.TCP_IP, "MyChannelEndpoint");
-	var dbTracer = instance.TraceSQLDatabaseRequest(dbinfo, "Select * From AA");
+	IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+	IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "MyChannelEndpoint");
+	IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
-	var result = await dbTracer.Trace(() => DatabaseApi.AsyncDatabaseCall());
+	var result = await dbTracer.TraceAsync(() => DatabaseApi.AsyncDatabaseCall());
 }
 
 ```
-The Trace method internally calls the Start or StartAsync and the End method, and in case of an exception it also calls the Error method. Additionally, it also takes care of collecting timing information across threads in case of the C# async method is executed on multiple threads.
+The `Trace` method internally calls the `Start` method and the `TraceAsync` method calls `StartAsync`. In case of an exception they also call the `Error` method. Both finally call the `End` method. Additionally, they also take care of collecting timing information across threads in case the C# async method is executed on multiple threads.
 
-The Trace method with its overloads supports both synchronous and asynchronous methods.
-So, to summarize this, in case of 
-* synchronous methods you can either use the Start(), End(), and Error() methods, or the convenient Trace() method,
-* asynchronous methods you can either use the StartAsync(), End(), and Error() methods, or the convenient Trace() method. 
+To summarize this, in case of
+* synchronous methods you can either use the `Start`, `End` and `Error` methods, or the convenience method `Trace`,
+* asynchronous methods you can either use the `StartAsync`, `End` and `Error` methods, or the convenience method `TraceAsync`.
 
-
-The second purpose of a Tracer is to allow tracing across process boundaries.
-
+To allow tracing across process and technology boundaries, tracers can be supplied with so-called tags. Tags are strings or byte arrays generated by the SDK that enable Dynatrace to trace a transaction end-to-end. The user has to take care of transporting the tag from one process to the other.
 
 ## Features
 
@@ -143,75 +147,146 @@ The feature sets differ slightly with each language implementation. More functio
 A more detailed specification of the features can be found in [Dynatrace OneAgent SDK](https://github.com/Dynatrace/OneAgent-SDK).
 
 |Feature                                  |Required OneAgent SDK for .NET  version|
-|:------                                  |:----------------------------------------|
-|Trace SQL database requests              |>=1.0.0                                  |
+|:------                                  |:--------------------------------------|
+|Trace SQL database requests              |>=1.0.0-alpha                          |
+|Logging callback                         |>=1.1.0-alpha                          |
+|Trace remote calls                       |>=1.1.0-alpha                          |
 
 
 
 ### Trace SQL database requests
 
-A SQL database request is traced by calling TraceSQLDatabaseRequest(). See [DatabaseRequestTracerSamples.cs](/sample/Dynatrace.OneAgent.Sdk.Sample/DatabaseRequestTracerSamples.cs) for the full list of examples (sync/async/lambda/exception/...)
+A SQL database request is traced by calling `TraceSQLDatabaseRequest`. See [DatabaseRequestTracerSamples.cs](/sample/Dynatrace.OneAgent.Sdk.Sample/DatabaseRequestTracerSamples.cs) for the full list of examples (sync/async/lambda/exception/...)
 
 **Example synchronous database call (see [DatabaseRequestTracerSamples.cs](/sample/Dynatrace.OneAgent.Sdk.Sample/DatabaseRequestTracerSamples.cs) for more details):**
 
 ```csharp
-var instance = OneAgentSdkFactory.CreateInstance();
-
-var dbinfo = instance.CreateDatabaseInfo("MyDb", "MyVendor", Dynatrace.OneAgent.Sdk.Api.Enums.ChannelType.TCP_IP, "MyChannelEndpoint");
-var dbTracer = instance.TraceSQLDatabaseRequest(dbinfo, "Select * From AA");
+IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
 dbTracer.Start();
 try
 {
-    VoidMethod();
+	ExecuteDbCallVoid();
 }
 catch
 {
-    dbTracer.Error("DB call failed");
+	dbTracer.Error("DB call failed");
+	// handle or rethrow
 }
 finally
 {
-    dbTracer.End();
+	dbTracer.End();
 }
 ```
 
 **Example asynchronous database call (see [DatabaseRequestTracerSamples.cs](/sample/Dynatrace.OneAgent.Sdk.Sample/DatabaseRequestTracerSamples.cs) for more details):**
 
 ```csharp
-var instance = OneAgentSdkFactory.CreateInstance();
-var dbinfo = instance.CreateDatabaseInfo("MyDb", "MyVendor", Dynatrace.OneAgent.Sdk.Api.Enums.ChannelType.TCP_IP, "MyChannelEndpoint");
-var dbTracer = instance.TraceSQLDatabaseRequest(dbinfo, "Select * From AA");
+IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
-dbTracer.StartAsync();
+await dbTracer.StartAsync();
 try
 {
-    await VoidTask();
+	await ExecuteDbCallVoidAsync();
 }
 catch
 {
-    dbTracer.Error("DB call failed");
+	dbTracer.Error("DB call failed");
+	// handle or rethrow
 }
 finally
 {
-    dbTracer.End();
+	dbTracer.End();
 }
 ```
 
 **Example tracing database call in a async lambda expression (see [DatabaseRequestTracerSamples.cs](/sample/Dynatrace.OneAgent.Sdk.Sample/DatabaseRequestTracerSamples.cs) for more details):**
 
 ```csharp
-var instance = OneAgentSdkFactory.CreateInstance();
-var dbinfo = instance.CreateDatabaseInfo("MyDb", "MyVendor", Dynatrace.OneAgent.Sdk.Api.Enums.ChannelType.TCP_IP, "MyChannelEndpoint");
-var dbTracer = instance.TraceSQLDatabaseRequest(dbinfo, "Select * From AA");
+IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
-var res = await dbTracer.Trace(() => IntTask());
+int res = dbTracer.Trace(() => ExecuteDbCallInt());
 ```
 
+### Trace remote calls
 
+You can use the SDK to trace proprietary IPC communication from one process to the other. This will enable you to see full Service Flow, PurePath and Smartscape topology for remoting technologies that Dynatrace is not aware of.
 
-### Administrative Apis
+To trace any kind of remote call you first need to create a Tracer. The Tracer object represents the endpoint that you want to call, as such you need to supply the name of the remote service and remote method. In addition you need to transport the tag in your remote call to the server side if you want to trace it end-to-end.
 
-not yet available
+```csharp
+IOutgoingRemoteCallTracer outgoingRemoteCallTracer = oneAgentSdk.TraceOutgoingRemoteCall(
+	"RemoteMethod", "RemoteServiceName",
+	"mrcp://endpoint/service", ChannelType.TCP_IP, "myRemoteHost:1234");
+outgoingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
+
+outgoingRemoteCallTracer.Start();
+try
+{
+	string tag = outgoingRemoteCallTracer.GetDynatraceStringTag();
+	// make the call and transport the tag across to server
+}
+catch (Exception e)
+{
+	outgoingRemoteCallTracer.Error(e.Message);
+	// handle or rethrow
+}
+finally
+{
+	outgoingRemoteCallTracer.End();
+}
+```
+
+On the server side you need to wrap the handling and processing of your remote call as well. This will not only trace the server side call and everything that happens, it will also connect it to the calling side.
+
+```csharp
+IIncomingRemoteCallTracer incomingRemoteCallTracer = oneAgentSdk
+    .TraceIncomingRemoteCall("RemoteMethod", "RemoteServiceName", "mrcp://endpoint/service");
+
+string incomingDynatraceStringTag = ...; // retrieve from incoming call metadata
+incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag);
+
+incomingRemoteCallTracer.Start();
+try
+{
+	incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
+	ProcessRemoteCall();
+}
+catch (Exception e)
+{
+	incomingRemoteCallTracer.Error(e.Message);
+	// handle or rethrow
+}
+finally
+{
+	incomingRemoteCallTracer.End();
+}
+```
+
+### Logging callback
+
+The SDK provides a logging-callback to give information back to the calling application in case of an error. The user application has to provide a callback like the following:
+
+```csharp
+class StdErrLoggingCallback : ILoggingCallback
+{
+	public void Error(string message) => Console.WriteLine("[OneAgent SDK] Error: " + message);
+
+	public void Warn(string message) => Console.WriteLine("[OneAgent SDK] Warning: " + message);
+}
+
+public static void Main(string[] args)
+{
+	IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+	var loggingCallback = new StdErrLoggingCallback();
+	oneAgentSdk.SetLoggingCallback(loggingCallback);
+}
+```
+
+In general it is a good idea to forward these logging events to your application specific logging framework.
 
 ## Further readings
 
@@ -220,14 +295,14 @@ not yet available
 
 ## Help & Support
 
-The Dynatrace OneAgent SDK for .NET is an open source project, currently in early access status (EAP).
+The Dynatrace OneAgent SDK for .NET is an open source project, currently in beta status.
 
 ### Get Help
 
 * Ask a question in the [product forums](https://answers.dynatrace.com/spaces/482/view.html)
 * Read the [product documentation](https://www.dynatrace.com/support/help/)
 
-### Open a [GitHub issue](https://github.com/Dynatrace/OneAgent-SDK-for-Java/issues) to
+### Open a [GitHub issue](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/issues) to
 
 * Report minor defects, minor items or typos
 * Ask for improvements or changes in the SDK API
@@ -239,6 +314,7 @@ SLAs don't apply for GitHub tickets
 
 see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/releases)
 
-|Version|Description                                 |
-|:------|:-------------------------------------------|
-|1.0.0  |Initial release                             |
+|Version    |Description                                  |
+|:----------|:--------------------------------------------|
+|1.0.0-alpha|EAP release                                  |
+|1.1.0-alpha|Adds remote call tracing and logging callback|

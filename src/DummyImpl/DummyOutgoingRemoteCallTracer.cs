@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
-    internal class DummyIncomingRemoteCallTracer : IIncomingRemoteCallTracer
+    internal class DummyOutgoingRemoteCallTracer : IOutgoingRemoteCallTracer
 	{
 		public void End()
 		{
@@ -29,13 +29,9 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 		{
 		}
 
-		public void SetDynatraceByteTag(byte[] tag)
-		{
-		}
+		public byte[] GetDynatraceByteTag() => new byte[0];
 
-		public void SetDynatraceStringTag(string tag)
-		{
-		}
+		public string GetDynatraceStringTag() => string.Empty;
 
 		public void SetProtocolName(string protocolName)
 		{
@@ -45,29 +41,19 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 		{
 		}
 
-		public Task StartAsync()
-		{
+        public Task StartAsync()
+        {
             return Task.FromResult(0);
+        }
+
+        public void Trace(Action action)
+		{
 		}
 
-		public void Trace(Action action)
-		{
-			action();
-		}
+		public T Trace<T>(Func<T> func) => func();
 
-		public T Trace<T>(Func<T> func)
-		{
-			return func();
-		}
+		public Task TraceAsync(Func<Task> func) => func();
 
-		public Task TraceAsync(Func<Task> func)
-		{
-			return func();
-		}
-
-		public Task<T> TraceAsync<T>(Func<Task<T>> func)
-		{
-			return func();
-		}
+		public Task<T> TraceAsync<T>(Func<Task<T>> func) => func();
 	}
 }
