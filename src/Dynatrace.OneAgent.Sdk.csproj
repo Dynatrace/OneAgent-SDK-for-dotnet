@@ -2,12 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.0</TargetFramework>
-    <Version>1.1.0-alpha1</Version>
+    <Version>1.1.0</Version>
     <Authors>Dynatrace</Authors>
     <Product>Dynatrace OneAgent SDK for .NET</Product>
     <Description>This SDK allows Dynatrace customers to instrument .NET applications. This is useful to enhance the visibility for proprietary frameworks or custom frameworks not directly supported by Dynatrace OneAgent out-of-the-box.
-
-This SDK is currently in EAP and still work in progress.
 
 Requires Dynatrace OneAgent version 1.157 or newer installed.
 

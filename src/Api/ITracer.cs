@@ -59,7 +59,6 @@ namespace Dynatrace.OneAgent.Sdk.Api
 		/// </summary>
 		void End();
 
-
         /// <summary>
         /// Convenience method.
         /// Traces an Action, which represents a synchronous call
@@ -77,9 +76,8 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// </summary>
         /// <typeparam name="T">The return type of the wrapped method</typeparam>
         /// <param name="func">A func that wraps the method call you want to trace</param>
-        /// <returns>The return value of the wrapped method</returns>
+        /// <returns>The return value of the wrapped method (or default(T) if func==null)</returns>
         T Trace<T>(Func<T> func);
-
 
         /// <summary><![CDATA[
         /// Convenience method.
@@ -88,7 +86,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// and in case of an exception also the Error(string) method.
         /// ]]></summary>
         /// <param name="func">A func that wraps the method call you want to trace</param>
-        /// <returns>The task that you wrapped in the Task, which you can await on</returns>
+        /// <returns>The task that you wrapped in the Task, which you can await on (or null if func==null)</returns>
         Task TraceAsync(Func<Task> func);
 
         /// <summary><![CDATA[
@@ -99,7 +97,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// ]]></summary>
         /// <typeparam name="T">The return type of the wrapped method</typeparam>
         /// <param name="func">A func that wraps the method call you want to trace</param>
-        /// <returns><![CDATA[ The task that you wrapped in the Task<T>, which you can await on ]]></returns>
+        /// <returns><![CDATA[The task that you wrapped in the Task<T>, which you can await on (or null if func==null)]]></returns>
         Task<T> TraceAsync<T>(Func<Task<T>> func);
 	}
 }
