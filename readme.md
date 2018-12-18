@@ -1,5 +1,3 @@
-**Disclaimer: This SDK is currently in EAP and still work in progress.**
-
 # Dynatrace OneAgent SDK for .NET
 
 This SDK allows Dynatrace customers to instrument .NET applications. This is useful to enhance the visibility for proprietary frameworks
@@ -41,8 +39,8 @@ OneAgent is installed on the host so that your application is not affected by an
 
 |OneAgent SDK for .NET|Required OneAgent version|
 |:-----------------------|:------------------------|
+|1.1.0                   |>=1.157                  |
 |1.0.0-alpha             |1.153-1.155              |
-|1.1.0-alpha             |>=1.157                  |
 
 ## Integration
 
@@ -148,9 +146,9 @@ A more detailed specification of the features can be found in [Dynatrace OneAgen
 
 |Feature                                  |Required OneAgent SDK for .NET  version|
 |:------                                  |:--------------------------------------|
+|Trace remote calls                       |>=1.1.0                                |
+|Logging callback                         |>=1.1.0                                |
 |Trace SQL database requests              |>=1.0.0-alpha                          |
-|Logging callback                         |>=1.1.0-alpha                          |
-|Trace remote calls                       |>=1.1.0-alpha                          |
 
 
 
@@ -295,8 +293,6 @@ In general it is a good idea to forward these logging events to your application
 
 ## Help & Support
 
-The Dynatrace OneAgent SDK for .NET is an open source project, currently in beta status.
-
 ### Get Help
 
 * Ask a question in the [product forums](https://answers.dynatrace.com/spaces/482/view.html)
@@ -316,5 +312,5 @@ see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/release
 
 |Version    |Description                                  |
 |:----------|:--------------------------------------------|
+|1.1.0      |Adds remote call tracing and logging callback|
 |1.0.0-alpha|EAP release                                  |
-|1.1.0-alpha|Adds remote call tracing and logging callback|
