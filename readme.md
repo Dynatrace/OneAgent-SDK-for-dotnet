@@ -293,12 +293,14 @@ In general it is a good idea to forward these logging events to your application
 
 ## Help & Support
 
-### Get Help
+The Dynatrace OneAgent SDK for .NET is in GA status. The features are fully supported by Dynatrace.
+
+#### Get Help
 
 * Ask a question in the [product forums](https://answers.dynatrace.com/spaces/482/view.html)
 * Read the [product documentation](https://www.dynatrace.com/support/help/)
 
-### Open a [GitHub issue](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/issues) to
+#### Open a [GitHub issue](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/issues) to
 
 * Report minor defects, minor items or typos
 * Ask for improvements or changes in the SDK API
@@ -306,11 +308,18 @@ In general it is a good idea to forward these logging events to your application
 
 SLAs don't apply for GitHub tickets
 
+#### Customers can open a ticket on the [Dynatrace support portal](https://support.dynatrace.com/supportportal/) to:
+* Get support from the Dynatrace technical support engineering team
+* Manage and resolve product related technical issues
+
+SLAs apply according to the customer's support level.
+
 ## Release Notes
 
 see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/releases)
 
 |Version    |Description                                  |
 |:----------|:--------------------------------------------|
-|1.1.0      |Adds remote call tracing and logging callback|
+|1.1.0      |First GA release - starting with this version OneAgent SDK for .NET is now officially supported by Dynatrace|
+|1.1.0-alpha|Adds remote call tracing and logging callback|
 |1.0.0-alpha|EAP release                                  |
