@@ -20,50 +20,34 @@ using System.Threading.Tasks;
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
     internal class DummyDatabaseRequestTracer : IDatabaseRequestTracer
-	{
-		public void End()
-		{
-		}
+    {
+        public void Start() { }
 
-		public void Error(string message)
-		{
-		}
+        public Task StartAsync() => Task.FromResult(0);
 
-		public void SetRoundTripCount(int roundTripCount)
-		{
-		}
+        public void Error(string message) { }
 
-		public void SetRowsReturned(int rowsReturned)
-		{
-		}
+        public void End() { }
 
-		public void Start()
-		{
-		}
+        public void Trace(Action action) => action?.Invoke();
 
-        public Task StartAsync()
+        public T Trace<T>(Func<T> func)
         {
-            return Task.FromResult(0);
+            return func != null ? func() : default(T);
         }
 
-        public void Trace(Action action)
-		{
-			action();
-		}
+        public Task TraceAsync(Func<Task> func)
+        {
+            return func != null ? func() : null;
+        }
 
-		public T Trace<T>(Func<T> func)
-		{
-			return func();
-		}
+        public Task<T> TraceAsync<T>(Func<Task<T>> func)
+        {
+            return func != null ? func() : null;
+        }
 
-		public Task TraceAsync(Func<Task> func)
-		{
-			return func();
-		}
+        public void SetRoundTripCount(int roundTripCount) { }
 
-		public Task<T> TraceAsync<T>(Func<Task<T>> func)
-		{
-			return func();
-		}
-	}
+        public void SetRowsReturned(int rowsReturned) { }
+    }
 }

@@ -20,54 +20,36 @@ using System.Threading.Tasks;
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
     internal class DummyIncomingRemoteCallTracer : IIncomingRemoteCallTracer
-	{
-		public void End()
-		{
-		}
+    {
+        public void Start() { }
 
-		public void Error(string message)
-		{
-		}
+        public Task StartAsync() => Task.FromResult(0);
 
-		public void SetDynatraceByteTag(byte[] tag)
-		{
-		}
+        public void Error(string message) { }
 
-		public void SetDynatraceStringTag(string tag)
-		{
-		}
+        public void End() { }
 
-		public void SetProtocolName(string protocolName)
-		{
-		}
+        public void Trace(Action action) => action?.Invoke();
 
-		public void Start()
-		{
-		}
+        public T Trace<T>(Func<T> func)
+        {
+            return func != null ? func() : default(T);
+        }
 
-		public Task StartAsync()
-		{
-            return Task.FromResult(0);
-		}
+        public Task TraceAsync(Func<Task> func)
+        {
+            return func != null ? func() : null;
+        }
 
-		public void Trace(Action action)
-		{
-			action();
-		}
+        public Task<T> TraceAsync<T>(Func<Task<T>> func)
+        {
+            return func != null ? func() : null;
+        }
 
-		public T Trace<T>(Func<T> func)
-		{
-			return func();
-		}
+        public void SetDynatraceByteTag(byte[] tag) { }
 
-		public Task TraceAsync(Func<Task> func)
-		{
-			return func();
-		}
+        public void SetDynatraceStringTag(string tag) { }
 
-		public Task<T> TraceAsync<T>(Func<Task<T>> func)
-		{
-			return func();
-		}
-	}
+        public void SetProtocolName(string protocolName) { }
+    }
 }
