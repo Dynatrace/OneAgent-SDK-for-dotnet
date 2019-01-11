@@ -72,7 +72,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
         }
 
         /// <summary>
-        /// Demonstrates an outgoing remote call originating from a client and being process by a server.
+        /// Demonstrates an outgoing remote call originating from a client and being processed by a server.
         /// The Dynatrace tag is used to link both calls together.
         /// </summary>
         public static void LinkedSyncRemoteCall()
@@ -127,7 +127,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
         }
 
         /// <summary>
-        /// Demonstrates an outgoing remote call originating from a client and being process by a server.
+        /// Demonstrates an outgoing remote call originating from a client and being processed by a server.
         /// The Dynatrace tag is used to link both calls together.
         /// </summary>
         public static void LinkedAsyncRemoteCall()

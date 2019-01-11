@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dynatrace.OneAgent.Sdk.Sample
@@ -54,6 +55,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             {
                 typeof(DatabaseRequestTracerSamples),
                 typeof(RemoteCallTracerSamples),
+                typeof(MessageTracerSamples),
                 typeof(CombinedSamples)
             };
             var testMethods = GetTestMethods(testClasses).ToList();
@@ -61,38 +63,47 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                          group t.Name by t.DeclaringType.FullName into g
                          select new { TestClass = g.Key, TestMethods = g.ToList() };
 
-            var index = 1;
-            Console.WriteLine("Available samples:");
-            foreach (var g in groups)
-            {
-                Console.WriteLine($"\n[{g.TestClass}]");
-                foreach (var m in g.TestMethods)
-                {
-                    Console.WriteLine($"\t{index++}: {m}");
-                }
-            }
-            Console.WriteLine("\n---------------------------------------------------------------\n");
-            while (true)
-            {
-                Console.WriteLine($"Enter sample index (e.g. '1') or fully qualified method name (or press Enter to exit):");
-                Console.Write("> ");
-                string testName = Console.ReadLine()?.Trim();
-                if (string.IsNullOrEmpty(testName) || testName == "q")
-                {
-                    return;
-                }
-                var mi = GetMethodInfoForTestName(testMethods, testName);
+            if (args.Length == 1)
+            { // single run
+                var mi = GetMethodInfoForTestName(testMethods, args[0]);
                 if (mi != null)
                 {
-                    Console.WriteLine($"Invoking {mi.DeclaringType.Name}.{mi.Name}");
-                    object ret = mi.Invoke(null, null);
-                    (ret as Task)?.Wait();
-                    Console.WriteLine("Done\n");
+                    RunTestMethod(mi);
                 }
-                else
+                Thread.Sleep(5000); // assure everything is sent
+            }
+            else
+            { // interactive CLI
+                var index = 1;
+                Console.WriteLine("Available samples:");
+                foreach (var g in groups)
                 {
-                    Console.WriteLine($"Test '{testName}' not found.");
-                    Console.WriteLine("Please provide a qualified test name ('TestClass.TestMethod') or its index");
+                    Console.WriteLine($"\n[{g.TestClass}]");
+                    foreach (var m in g.TestMethods)
+                    {
+                        Console.WriteLine($"\t{index++}: {m}");
+                    }
+                }
+                Console.WriteLine("\n---------------------------------------------------------------\n");
+                while (true)
+                {
+                    Console.WriteLine($"Enter sample index (e.g. '1') or fully qualified method name (or press Enter to exit):");
+                    Console.Write("> ");
+                    string testName = Console.ReadLine()?.Trim();
+                    if (string.IsNullOrEmpty(testName) || testName == "q")
+                    {
+                        return;
+                    }
+                    var mi = GetMethodInfoForTestName(testMethods, testName);
+                    if (mi != null)
+                    {
+                        RunTestMethod(mi);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Test '{testName}' not found.");
+                        Console.WriteLine("Please provide a qualified test name ('TestClass.TestMethod') or its index");
+                    }
                 }
             }
         }
@@ -119,6 +130,13 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 });
             }
             return mi;
+        }
+        private static void RunTestMethod(MethodInfo mi)
+        {
+            Console.WriteLine($"Invoking {mi.DeclaringType.Name}.{mi.Name}");
+            object ret = mi.Invoke(null, null);
+            (ret as Task)?.Wait();
+            Console.WriteLine("Done\n");
         }
     }
 }

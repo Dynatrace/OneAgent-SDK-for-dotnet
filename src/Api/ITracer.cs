@@ -29,7 +29,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
 		/// <summary>
 		///  Starts this Tracer for a synchronous call.
 		///  This will capture all entry fields of the Tracer and start the time measurement.
-		///  Some entry fields must be set, before the Tracer is being started.
+		///  Some entry fields must be set before the Tracer is started.
 		///  See documentation of corresponding field for details.
 		///  In case no other restriction is documented, fields must be set prior calling End().
 		///  Start() might only be called once per Tracer.
