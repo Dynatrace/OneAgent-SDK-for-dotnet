@@ -34,7 +34,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             string serverEndpoint = "messageserver.example.com:1234";
             string topic = "my-topic";
             IMessagingSystemInfo messagingSystemInfo = SampleApplication.OneAgentSdk
-                .CreateMessagingSystemInfo("MyCustomMessagingSystem", topic, MessageDestinationType.TOPIC, ChannelType.TCP_IP, serverEndpoint);
+                .CreateMessagingSystemInfo(MessageSystemVendor.KAFKA, topic, MessageDestinationType.TOPIC, ChannelType.TCP_IP, serverEndpoint);
 
             IOutgoingMessageTracer outgoingMessageTracer = SampleApplication.OneAgentSdk.TraceOutgoingMessage(messagingSystemInfo);
 
@@ -72,7 +72,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             string serverEndpoint = "messageserver.example.com:1234";
             string topic = "my-topic";
             IMessagingSystemInfo messagingSystemInfo = SampleApplication.OneAgentSdk
-                .CreateMessagingSystemInfo("MyCustomMessagingSystem", topic, MessageDestinationType.TOPIC, ChannelType.TCP_IP, serverEndpoint);
+                .CreateMessagingSystemInfo(MessageSystemVendor.KAFKA, topic, MessageDestinationType.TOPIC, ChannelType.TCP_IP, serverEndpoint);
 
             IIncomingMessageReceiveTracer receiveTracer = SampleApplication.OneAgentSdk.TraceIncomingMessageReceive(messagingSystemInfo);
 
@@ -172,7 +172,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             string serverEndpoint = "messageserver.example.com:1234";
             string topic = "my-topic";
             IMessagingSystemInfo messagingSystemInfo = SampleApplication.OneAgentSdk
-                .CreateMessagingSystemInfo("MyCustomMessagingSystem", topic, MessageDestinationType.TOPIC, ChannelType.TCP_IP, serverEndpoint);
+                .CreateMessagingSystemInfo(MessageSystemVendor.KAFKA, topic, MessageDestinationType.TOPIC, ChannelType.TCP_IP, serverEndpoint);
 
             IOutgoingMessageTracer outgoingTracer = SampleApplication.OneAgentSdk.TraceOutgoingMessage(messagingSystemInfo);
 
