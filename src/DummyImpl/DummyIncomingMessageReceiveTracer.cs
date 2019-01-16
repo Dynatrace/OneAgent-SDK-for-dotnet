@@ -45,9 +45,5 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         {
             return func != null ? func() : null;
         }
-
-        public void SetDynatraceByteTag(byte[] tag) { }
-
-        public void SetDynatraceStringTag(string tag) { }
     }
 }
