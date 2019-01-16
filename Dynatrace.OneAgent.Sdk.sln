@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynatrace.OneAgent.Sdk", "..\samples-dotnetsdk\oneagent-sdk-dotnet\src\Dynatrace.OneAgent.Sdk.csproj", "{9B37EF38-6707-4A3A-8339-A7A469F13B76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynatrace.OneAgent.Sdk", "src\Dynatrace.OneAgent.Sdk.csproj", "{9B37EF38-6707-4A3A-8339-A7A469F13B76}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynatrace.OneAgent.Sdk.Sample", "..\samples-dotnetsdk\oneagent-sdk-dotnet\sample\Dynatrace.OneAgent.Sdk.Sample\Dynatrace.OneAgent.Sdk.Sample.csproj", "{AAE8A2D8-1CD2-4402-B492-F22F6C92CA9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynatrace.OneAgent.Sdk.Sample", "samples\Dynatrace.OneAgent.Sdk.Sample.csproj", "{AAE8A2D8-1CD2-4402-B492-F22F6C92CA9A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynatrace.OneAgent.Sdk.Test", "..\samples-dotnetsdk\oneagent-sdk-dotnet\test\Dynatrace.OneAgent.Sdk.Test.csproj", "{44412AA9-24EF-44C6-8996-2C252FE68851}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynatrace.OneAgent.Sdk.Test", "test\Dynatrace.OneAgent.Sdk.Test.csproj", "{44412AA9-24EF-44C6-8996-2C252FE68851}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
