@@ -60,7 +60,7 @@ The Dynatrace OneAgent SDK for .NET has no further dependencies.
 
 * Make sure OneAgent is installed and running on the host monitoring your application
 * Make sure process monitoring is enabled
-* Ensure that you have set the OneAgent SDK logging callback and check its output
+* Ensure that you have set the OneAgent SDK [logging callback](#logging-callback) and check its output
 
 ## API Concepts
 
@@ -87,7 +87,7 @@ void Error(String message);
 void End();
 ```
 
-The Start method only supports synchronous methods (in other words C# methods without the async keyword). If you call Start() in an async method, then with high probability the SDK won’t capture the specific data.
+The Start method only supports synchronous methods (in other words C# methods without the async keyword). If you call Start() in an async method, then with high probability the SDK won't capture the specific data.
 
 To support asynchronous methods (which are C# methods that are marked with the async keyword) the SDK offers a StartAsync() method.
 

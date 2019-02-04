@@ -28,8 +28,9 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <summary>
         /// Installs a callback that gets informed, if any SDK action has failed. For details see <see cref="ILoggingCallback"/> interface.
         /// The provided callback must be thread-safe, when using this <see cref="IOneAgentSdk"/> instance in multithreaded environments.
+        /// The log messages are primarily intended as a development and debugging aid and are subject to change, please do not try to parse them or assert on them.
         /// </summary>
-        /// <param name="loggingCallback">may be null, to remove current callback. provided callback replaces any previously set callback.</param>
+        /// <param name="loggingCallback">May be null, to remove the current callback. The provided callback replaces any previously set callback.</param>
         void SetLoggingCallback(ILoggingCallback loggingCallback);
 
         #region Remote Calls (incoming and outgoing)
