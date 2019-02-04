@@ -58,9 +58,13 @@ The Dynatrace OneAgent SDK for .NET has no further dependencies.
 
 ### Troubleshooting
 
-* Make sure OneAgent is installed and running on the host monitoring your application
-* Make sure process monitoring is enabled
-* Ensure that you have set the OneAgent SDK [logging callback](#logging-callback) and check its output
+Make sure that:
+
+* OneAgent is installed on the host running your application
+* the installed version of OneAgent is compatible with the SDK version you are using
+  (see [Requirements](#requirements))
+* process monitoring is enabled in Dynatrace
+* you have set the OneAgent SDK [logging callback](#logging-callback) and check its output
 
 ## API Concepts
 
@@ -287,12 +291,14 @@ outgoingMessageTracer.Start();
 try
 {
     Message message = new Message();
+    message.CorrelationId = "my-correlation-id-1234"; // optional, determined by application
+
     message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME] = outgoingMessageTracer.GetDynatraceByteTag();
 
     SendResult result = MyMessagingSystem.SendMessage(message);
 
-    outgoingMessageTracer.SetCorrelationId(result.CorrelationId);
-    outgoingMessageTracer.SetVendorMessageId(result.VendorMessageId);
+    outgoingMessageTracer.SetCorrelationId(message.CorrelationId);    // optional
+    outgoingMessageTracer.SetVendorMessageId(result.VendorMessageId); // optional
 }
 catch(Exception ex)
 {
@@ -331,7 +337,7 @@ try
         processTracer.SetDynatraceByteTag(message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME]);
     }
     processTracer.Start();
-    processTracer.SetCorrelationId(receiveResult.CorrelationId);     // optional
+    processTracer.SetCorrelationId(message.CorrelationId);           // optional
     processTracer.SetVendorMessageId(receiveResult.VendorMessageId); // optional
     try
     {
@@ -380,7 +386,7 @@ void OnMessageReceived(ReceiveResult receiveResult)
         processTracer.SetDynatraceByteTag(message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME]);
     }
     processTracer.Start();
-    processTracer.SetCorrelationId(receiveResult.CorrelationId);     // optional
+    processTracer.SetCorrelationId(message.CorrelationId);           // optional
     processTracer.SetVendorMessageId(receiveResult.VendorMessageId); // optional
     try
     {

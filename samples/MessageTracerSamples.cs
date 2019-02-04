@@ -42,12 +42,13 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             try
             {
                 Message message = new Message();
+                message.CorrelationId = "my-correlation-id-1234"; // optional, determined by application
                 // transport the Dynatrace tag along with the message:
                 message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME] = outgoingMessageTracer.GetDynatraceByteTag();
 
                 SendResult result = MyMessagingSystem.SendMessage(message);
 
-                outgoingMessageTracer.SetCorrelationId(result.CorrelationId);     // optional
+                outgoingMessageTracer.SetCorrelationId(message.CorrelationId);    // optional
                 outgoingMessageTracer.SetVendorMessageId(result.VendorMessageId); // optional
             }
             catch(Exception ex)
@@ -92,7 +93,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 }
 
                 processTracer.Start();
-                processTracer.SetCorrelationId(receiveResult.CorrelationId);     // optional
+                processTracer.SetCorrelationId(message.CorrelationId);           // optional
                 processTracer.SetVendorMessageId(receiveResult.VendorMessageId); // optional
                 try
                 {
@@ -144,7 +145,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             }
 
             processTracer.Start();
-            processTracer.SetCorrelationId(receiveResult.CorrelationId);     // optional
+            processTracer.SetCorrelationId(message.CorrelationId);           // optional
             processTracer.SetVendorMessageId(receiveResult.VendorMessageId); // optional
             try
             {
@@ -180,12 +181,13 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             try
             {
                 Message message = new Message();
+                message.CorrelationId = "my-correlation-id-1234"; // optional, determined by application
                 // transport the Dynatrace tag along with the message:
                 message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME] = outgoingTracer.GetDynatraceByteTag();
 
                 SendResult result = MyMessagingSystem.SendMessage(message);
 
-                outgoingTracer.SetCorrelationId(result.CorrelationId);     // optional
+                outgoingTracer.SetCorrelationId(message.CorrelationId);    // optional
                 outgoingTracer.SetVendorMessageId(result.VendorMessageId); // optional
             }
             catch (Exception ex)
@@ -220,8 +222,8 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                     }
 
                     processTracer.Start();
-                    processTracer.SetCorrelationId(receiveResult.CorrelationId);
-                    processTracer.SetVendorMessageId(receiveResult.VendorMessageId);
+                    processTracer.SetCorrelationId(message.CorrelationId);           // optional
+                    processTracer.SetVendorMessageId(receiveResult.VendorMessageId); // optional
                     try
                     {
                         ProcessMessage(message); // do the work ...
@@ -256,23 +258,18 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         class Message
         {
-            public Dictionary<string, byte[]> Headers;
+            public Dictionary<string, byte[]> Headers { get; } = new Dictionary<string, byte[]>();
+            public string CorrelationId { get; set; }
             public object Value { get; set; }
-            public Message()
-            {
-                Headers = new Dictionary<string, byte[]>();
-            }
         }
 
         class SendResult
         {
-            public string CorrelationId { get; set; }
             public string VendorMessageId { get; set; }
         }
 
         class ReceiveResult
         {
-            public string CorrelationId { get; set; }
             public string VendorMessageId { get; set; }
             public Message Message { get; set; }
         }
@@ -286,8 +283,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 lastSentMessage = message;
                 return new SendResult
                 {
-                    CorrelationId = "my-correlation-id",
-                    VendorMessageId = "my-vendor-message-id"
+                    VendorMessageId = "my-vendor-message-id-1234"
                 };
             }
             public static ReceiveResult ReceiveMessage()
@@ -295,8 +291,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 Thread.Sleep(100);
                 return new ReceiveResult
                 {
-                    CorrelationId = "my-correlation-id",
-                    VendorMessageId = "my-vendor-message-id",
+                    VendorMessageId = "my-vendor-message-id-1234",
                     Message = lastSentMessage ?? new Message()
                 };
             }
