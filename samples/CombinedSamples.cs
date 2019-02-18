@@ -33,7 +33,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             try
             {
                 string outgoingDynatraceStringTag = outgoingRemoteCallTracer.GetDynatraceStringTag();
-                // make the call and transport the tag across to server
+                // make the call and transport the tag across to server to link both sides of the remote call
 
                 // represents server side processing
                 Thread server = new Thread(() =>

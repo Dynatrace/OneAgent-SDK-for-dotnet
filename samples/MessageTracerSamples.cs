@@ -43,7 +43,9 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             {
                 Message message = new Message();
                 message.CorrelationId = "my-correlation-id-1234"; // optional, determined by application
-                // transport the Dynatrace tag along with the message:
+
+                // transport the Dynatrace tag along with the message to allow the outgoing message tracer to be linked
+                // together with the message processing tracer on the receiving side
                 message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME] = outgoingMessageTracer.GetDynatraceByteTag();
 
                 SendResult result = MyMessagingSystem.SendMessage(message);
@@ -84,14 +86,15 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 ReceiveResult receiveResult = MyMessagingSystem.ReceiveMessage();
                 Message message = receiveResult.Message;
 
-                // start processing:
                 IIncomingMessageProcessTracer processTracer = SampleApplication.OneAgentSdk.TraceIncomingMessageProcess(messagingSystemInfo);
 
+                // retrieve Dynatrace tag created using the outgoing message tracer to link both sides together:
                 if (message.Headers.ContainsKey(OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME))
                 {
                     processTracer.SetDynatraceByteTag(message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME]);
                 }
 
+                // start processing:
                 processTracer.Start();
                 processTracer.SetCorrelationId(message.CorrelationId);           // optional
                 processTracer.SetVendorMessageId(receiveResult.VendorMessageId); // optional
@@ -136,14 +139,15 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
             Message message = receiveResult.Message;
 
-            // start processing:
             IIncomingMessageProcessTracer processTracer = SampleApplication.OneAgentSdk.TraceIncomingMessageProcess(messagingSystemInfo);
 
+            // retrieve Dynatrace tag created using the outgoing message tracer to link both sides together:
             if (message.Headers.ContainsKey(OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME))
             {
                 processTracer.SetDynatraceByteTag(message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME]);
             }
 
+            // start processing:
             processTracer.Start();
             processTracer.SetCorrelationId(message.CorrelationId);           // optional
             processTracer.SetVendorMessageId(receiveResult.VendorMessageId); // optional
@@ -182,7 +186,9 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             {
                 Message message = new Message();
                 message.CorrelationId = "my-correlation-id-1234"; // optional, determined by application
-                // transport the Dynatrace tag along with the message:
+
+                // transport the Dynatrace tag along with the message to allow the outgoing message tracer to be linked
+                // together with the message processing tracer on the receiving side
                 message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME] = outgoingTracer.GetDynatraceByteTag();
 
                 SendResult result = MyMessagingSystem.SendMessage(message);
@@ -213,14 +219,15 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                     ReceiveResult receiveResult = MyMessagingSystem.ReceiveMessage();
                     Message message = receiveResult.Message;
 
-                    // start processing:
                     IIncomingMessageProcessTracer processTracer = SampleApplication.OneAgentSdk.TraceIncomingMessageProcess(messagingSystemInfo);
 
+                    // retrieve Dynatrace tag created using the outgoing message tracer to link both sides together:
                     if (message.Headers.ContainsKey(OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME))
                     {
                         processTracer.SetDynatraceByteTag(message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME]);
                     }
 
+                    // start processing:
                     processTracer.Start();
                     processTracer.SetCorrelationId(message.CorrelationId);           // optional
                     processTracer.SetVendorMessageId(receiveResult.VendorMessageId); // optional

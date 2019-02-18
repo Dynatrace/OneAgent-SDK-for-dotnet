@@ -18,8 +18,8 @@ using Dynatrace.OneAgent.Sdk.Api.Infos;
 
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
-	internal class DummyMessagingSystemInfo : IMessagingSystemInfo
+    internal class DummyMessagingSystemInfo : IMessagingSystemInfo
     {
-		public DummyMessagingSystemInfo() { }
-	}
+        public DummyMessagingSystemInfo() { }
+    }
 }

@@ -23,9 +23,9 @@ namespace Dynatrace.OneAgent.Sdk.Test
 {
     /// <summary>
     /// Tests that the dummy implementations of tracers (which are in place when no (compatible) OneAgent is found or if the SDK is disabled):
-    /// * do not cause the application to crash when being used
-    /// * call the Actions and Funcs provided via Trace and TraceAsync and
-    /// * do not swallow any exceptions
+    /// - do not cause the application to crash when being used
+    /// - call the Actions and Funcs provided via Trace and TraceAsync and
+    /// - do not swallow any exceptions
     /// </summary>
     public abstract class DummyTracerTestBase<T> where T : ITracer
     {

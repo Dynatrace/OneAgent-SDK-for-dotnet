@@ -20,6 +20,9 @@ using Dynatrace.OneAgent.Sdk.Api.Infos;
 
 namespace Dynatrace.OneAgent.Sdk.Test
 {
+    /// <summary>
+    /// See <see cref="DummyTracerTestBase{T}"/>
+    /// </summary>
     public class DummyIncomingMessageProcessTracerTests : DummyTracerTestBase<IIncomingMessageProcessTracer>
     {
         readonly IMessagingSystemInfo messagingSystemInfo = OneAgentSdk
