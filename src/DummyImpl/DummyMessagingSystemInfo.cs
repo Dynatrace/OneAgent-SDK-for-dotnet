@@ -14,16 +14,12 @@
 // limitations under the License.
 //
 
-namespace Dynatrace.OneAgent.Sdk.Api
+using Dynatrace.OneAgent.Sdk.Api.Infos;
+
+namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
-    /// <summary>
-    /// Interface for outgoing remote call tracer.
-    /// </summary>
-    public interface IOutgoingRemoteCallTracer : ITracer, IOutgoingTaggable
-	{
-        /// <summary>
-        /// Sets the name of the used remoting protocol. This is completely optional and just for display purposes.
-        /// </summary>
-		void SetProtocolName(string protocolName);
-	}
+    internal class DummyMessagingSystemInfo : IMessagingSystemInfo
+    {
+        public DummyMessagingSystemInfo() { }
+    }
 }

@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Dynatrace LLC
+// Copyright 2019 Dynatrace LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,8 +28,9 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <summary>
         /// Installs a callback that gets informed, if any SDK action has failed. For details see <see cref="ILoggingCallback"/> interface.
         /// The provided callback must be thread-safe, when using this <see cref="IOneAgentSdk"/> instance in multithreaded environments.
+        /// The log messages are primarily intended as a development and debugging aid and are subject to change, please do not try to parse them or assert on them.
         /// </summary>
-        /// <param name="loggingCallback">may be null, to remove current callback. provided callback replaces any previously set callback.</param>
+        /// <param name="loggingCallback">May be null, to remove the current callback. The provided callback replaces any previously set callback.</param>
         void SetLoggingCallback(ILoggingCallback loggingCallback);
 
         #region Remote Calls (incoming and outgoing)
@@ -67,14 +68,13 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// Initializes a DatabaseInfo instance that is required for tracing database requests.
         /// </summary>
         /// <param name="name">name of the database</param>
-        /// <param name="vendor">database vendor name (e.g. Oracle, MySQL, ...), can be a user defined name
-        ///  If possible use a constant defined in com.dynatrace.oneagent.sdk.api.enums.DatabaseVendor</param>
+        /// <param name="vendor">name of the database vendor - use <see cref="DatabaseVendor"/> for well-known vendors and otherwise provide a custom string</param>
         /// <param name="channelType">communication protocol used to communicate with the database.</param>
-        /// <param name="channelEndpoint">this represents the communication endpoint for the database. This information allows Dynatrace to tie the database requests to a specific process or cloud service. It is optional.
+        /// <param name="channelEndpoint">This represents the communication endpoint for the database. This information allows Dynatrace to tie the database requests to a specific process or cloud service. It is optional.
         /// * for TCP/IP: host name/IP of the server-side (can include port in the form of "host:port")
         /// * for UNIX domain sockets: name of domain socket file
         /// * for named pipes: name of pipe</param>
-        /// <returns>DatabaseInfo instance to work with</returns>
+        /// <returns>IDatabaseInfo instance to work with</returns>
         IDatabaseInfo CreateDatabaseInfo(string name, string vendor, ChannelType channelType, string channelEndpoint);
 
         /// <summary>
@@ -82,8 +82,48 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// </summary>
         /// <param name="databaseInfo">information about database</param>
         /// <param name="statement">database SQL statement</param>
-        /// <returns>DatabaseRequestTracer to work with</returns>
+        /// <returns>IDatabaseRequestTracer to work with</returns>
         IDatabaseRequestTracer TraceSQLDatabaseRequest(IDatabaseInfo databaseInfo, string statement);
+
+        #endregion
+
+        #region Messaging (outgoing & incoming)
+
+        /// <summary>
+        /// Creates an IMessagingSystemInfo instance that is required for tracing messages.
+        /// </summary>
+        /// <param name="vendorName">use <see cref="MessageSystemVendor"/> for well-known vendors and otherwise provide a custom name</param>
+        /// <param name="destinationName">destination name (e.g. queue name, topic name)</param>
+        /// <param name="destinationType">destination type</param>
+        /// <param name="channelType">communication protocol used</param>
+        /// <param name="channelEndpoint">optional and depending on protocol:
+        /// * for TCP/IP: host name/IP of the server-side (can include port)
+        /// * for UNIX domain sockets: name of domain socket file
+        /// * for named pipes: name of pipe
+        /// </param>
+        /// <returns>IMessagingSystemInfo instance to work with</returns>
+        IMessagingSystemInfo CreateMessagingSystemInfo(string vendorName, string destinationName, MessageDestinationType destinationType, ChannelType channelType, string channelEndpoint);
+
+        /// <summary>
+        /// Creates a tracer for an outgoing asynchronous message (send).
+        /// </summary>
+        /// <param name="messagingSystem">Information about the messaging system, created using <see cref="CreateMessagingSystemInfo"/></param>
+        /// <returns>IOutgoingMessageTracer instance to work with</returns>
+        IOutgoingMessageTracer TraceOutgoingMessage(IMessagingSystemInfo messagingSystem);
+
+        /// <summary>
+        /// Creates a tracer for an incoming asynchronous message (receive).
+        /// </summary>
+        /// <param name="messagingSystem">Information about the messaging system, created using <see cref="CreateMessagingSystemInfo"/></param>
+        /// <returns>IIncomingMessageReceiveTracer instance to work with</returns>
+        IIncomingMessageReceiveTracer TraceIncomingMessageReceive(IMessagingSystemInfo messagingSystem);
+
+        /// <summary>
+        /// Creates a tracer for processing (consuming) a received message (onMessage).
+        /// </summary>
+        /// <param name="messagingSystem">Information about the messaging system, created using <see cref="CreateMessagingSystemInfo"/></param>
+        /// <returns>IIncomingMessageProcessTracer instance to work with</returns>
+        IIncomingMessageProcessTracer TraceIncomingMessageProcess(IMessagingSystemInfo messagingSystem);
 
         #endregion
     }

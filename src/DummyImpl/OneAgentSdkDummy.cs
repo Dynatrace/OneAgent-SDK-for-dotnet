@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Dynatrace LLC
+// Copyright 2019 Dynatrace LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,10 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         private readonly DummyDatabaseRequestTracer dummyDatabaseRequestTracer = new DummyDatabaseRequestTracer();
         private readonly DummyIncomingRemoteCallTracer dummyIncomingRemoteCallTracer = new DummyIncomingRemoteCallTracer();
         private readonly DummyOutgoingRemoteCallTracer dummyOutgoingRemoteCallTracer = new DummyOutgoingRemoteCallTracer();
+        private readonly DummyMessagingSystemInfo dummyMessagingSystemInfo = new DummyMessagingSystemInfo();
+        private readonly DummyOutgoingMessageTracer dummyOutgoingMessageTracer = new DummyOutgoingMessageTracer();
+        private readonly DummyIncomingMessageReceiveTracer dummyIncomingMessageReceiveTracer = new DummyIncomingMessageReceiveTracer();
+        private readonly DummyIncomingMessageProcessTracer dummyIncomingMessageProcessTracer = new DummyIncomingMessageProcessTracer();
 
         public IDatabaseInfo CreateDatabaseInfo(string name, string vendor, ChannelType channelType, string channelEndpoint)
             => dummyDatabaseInfo;
@@ -41,5 +45,18 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         public void SetLoggingCallback(ILoggingCallback loggingCallback)
         {
         }
+
+        public IMessagingSystemInfo CreateMessagingSystemInfo(string vendorName, string destinationName, MessageDestinationType destinationType, ChannelType channelType, string channelEndpoint)
+            => dummyMessagingSystemInfo;
+
+        public IOutgoingMessageTracer TraceOutgoingMessage(IMessagingSystemInfo messagingSystem)
+            => dummyOutgoingMessageTracer;
+
+        public IIncomingMessageReceiveTracer TraceIncomingMessageReceive(IMessagingSystemInfo messagingSystem)
+            => dummyIncomingMessageReceiveTracer;
+
+        public IIncomingMessageProcessTracer TraceIncomingMessageProcess(IMessagingSystemInfo messagingSystem)
+            => dummyIncomingMessageProcessTracer;
+
     }
 }

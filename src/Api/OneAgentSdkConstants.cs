@@ -17,13 +17,18 @@
 namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
-    /// Interface for outgoing remote call tracer.
+    /// Constants used in <see cref="IOneAgentSdk"/>
     /// </summary>
-    public interface IOutgoingRemoteCallTracer : ITracer, IOutgoingTaggable
-	{
+    public static class OneAgentSdkConstants
+    {
         /// <summary>
-        /// Sets the name of the used remoting protocol. This is completely optional and just for display purposes.
+        /// Using this headername to transport Dynatrace tag inside an outgoing http request ensures compatibility to Dynatrace built-in sensors.
         /// </summary>
-		void SetProtocolName(string protocolName);
-	}
+        public const string DYNATRACE_HTTP_HEADERNAME = "X-dynaTrace";
+
+        /// <summary>
+        /// Using this propertyname to transport Dynatrace tag along with the message, ensures compatibility to Dynatrace built-in sensors.
+        /// </summary>
+        public const string DYNATRACE_MESSAGE_PROPERTYNAME = "dtdTraceTagInfo";
+    }
 }

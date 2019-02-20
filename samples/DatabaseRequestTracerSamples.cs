@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Dynatrace LLC
+// Copyright 2019 Dynatrace LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
     {
         public static void Sync_StartEnd()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             dbTracer.Start();
@@ -58,7 +58,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Async_StartEnd()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             await dbTracer.StartAsync();
@@ -79,7 +79,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static void Sync_Lambda()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             int res = dbTracer.Trace(() => ExecuteDbCallInt());
@@ -87,7 +87,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Async_Lambda()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             int res = await dbTracer.TraceAsync(() => ExecuteDbCallIntAsync());
@@ -95,12 +95,12 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Async_Lambda_And_Async_Lambda()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             int res = await dbTracer.TraceAsync(() => ExecuteDbCallIntAsync());
 
-            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer2 = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo2, "Select * From AA");
 
             int res2 = await dbTracer2.TraceAsync(() => ExecuteDbCallIntAsync());
@@ -108,14 +108,14 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Async_StartAsyncEnd_And_Async_Lambda()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             await dbTracer.StartAsync();
             await ExecuteDbCallVoidAsync();
             dbTracer.End();
 
-            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer2 = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo2, "Select * From AA");
 
             int res2 = await dbTracer2.TraceAsync(() => ExecuteDbCallIntAsync());
@@ -123,7 +123,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Async_Exception_StartAsyncEnd()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             await dbTracer.StartAsync();
@@ -143,7 +143,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Async_Exception_Lambda()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
             try
             {
@@ -157,7 +157,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Async_Exception_Lambda_And_Async_Exception_Lambda()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
             try
             {
@@ -168,7 +168,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 Console.WriteLine($"Exception in {nameof(Async_Exception_Lambda_And_Async_Exception_Lambda)}, Message: {e.Message}");
             }
 
-            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer2 = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo2, "Select2 * From AA");
 
             try
@@ -183,11 +183,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Async_Lambda_And_Sync_Exception_Lambda()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
             await dbTracer.TraceAsync(() => ExecuteDbCallIntAsync());
 
-            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer2 = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo2, "Select2 * From AA");
 
             try
@@ -202,7 +202,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task Sync_Exception_Lambda_And_Async_Lambda()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             try
@@ -214,18 +214,18 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 Console.WriteLine($"Exception in {nameof(Sync_Exception_Lambda_And_Async_Lambda)}, Message: {e.Message}");
             }
 
-            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer2 = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo2, "Select2 * From AA");
 
             int result = await dbTracer2.TraceAsync(() => ExecuteDbCallIntAsync());
         }
 
         /// <summary>
-        /// tests various misuse cases of the SDK resulting in warnings through the logging callback
+        /// Depicts various cases of misusing the SDK resulting in warnings through the logging callback
         /// </summary>
         public static void Sync_Misuse_LoggingCallbackTest()
         {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "example.com:12345");
+            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
             IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
             dbTracer.End();                 // Warning: missing Start
@@ -236,6 +236,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             dbTracer.SetRoundTripCount(0);  // Warning: has to be set before End
             dbTracer.SetRowsReturned(0);    // Warning: has to be set before End
             dbTracer.End();                 // Warning: already ended
+            dbTracer.Start();               // Warning: already ended
         }
 
         #region DbCalls

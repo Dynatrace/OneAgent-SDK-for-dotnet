@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Dynatrace LLC
+// Copyright 2019 Dynatrace LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             try
             {
                 string outgoingDynatraceStringTag = outgoingRemoteCallTracer.GetDynatraceStringTag();
-                // make the call and transport the tag across to server
+                // make the call and transport the tag across to server to link both sides of the remote call together
             }
             catch (Exception e)
             {
@@ -52,7 +52,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 .TraceIncomingRemoteCall("RemoteMethod", "RemoteServiceName", "mrcp://endpoint/service");
 
             string incomingDynatraceStringTag = string.Empty; // retrieve from incoming call metadata
-            incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag);
+            incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag); // link both sides of remote call together
 
             incomingRemoteCallTracer.Start();
             try
@@ -72,7 +72,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
         }
 
         /// <summary>
-        /// Demonstrates an outgoing remote call originating from a client and being process by a server.
+        /// Demonstrates an outgoing remote call originating from a client and being processed by a server.
         /// The Dynatrace tag is used to link both calls together.
         /// </summary>
         public static void LinkedSyncRemoteCall()
@@ -85,7 +85,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             try
             {
                 string outgoingDynatraceStringTag = outgoingRemoteCallTracer.GetDynatraceStringTag();
-                // make the call and transport the tag across to server
+                // make the call and transport the tag across to server to link both sides of the remote call together
 
                 // represents server side processing
                 Thread server = new Thread(() =>
@@ -94,7 +94,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                         .TraceIncomingRemoteCall("RemoteMethod", "RemoteServiceName", "mrcp://endpoint/service");
 
                     string incomingDynatraceStringTag = outgoingDynatraceStringTag; // retrieve from incoming call metadata
-                    incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag);
+                    incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag); // link both sides of remote call together
 
                     incomingRemoteCallTracer.Start();
                     try
@@ -127,7 +127,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
         }
 
         /// <summary>
-        /// Demonstrates an outgoing remote call originating from a client and being process by a server.
+        /// Demonstrates an outgoing remote call originating from a client and being processed by a server.
         /// The Dynatrace tag is used to link both calls together.
         /// </summary>
         public static void LinkedAsyncRemoteCall()
@@ -140,7 +140,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             try
             {
                 string outgoingDynatraceStringTag = outgoingRemoteCallTracer.GetDynatraceStringTag();
-                // make the call and transport the tag across to server
+                // make the call and transport the tag across to server to link both sides of the remote call together
 
                 // represents server side processing
                 Thread server = new Thread(() =>
@@ -149,7 +149,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                         .TraceIncomingRemoteCall("RemoteMethod", "RemoteServiceName", "mrcp://endpoint/service");
 
                     string incomingDynatraceStringTag = outgoingDynatraceStringTag; // retrieve from incoming call metadata
-                    incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag);
+                    incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag); // link both sides of remote call together
 
                     incomingRemoteCallTracer.Start();
                     try

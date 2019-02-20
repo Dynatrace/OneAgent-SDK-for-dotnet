@@ -14,16 +14,17 @@
 // limitations under the License.
 //
 
-namespace Dynatrace.OneAgent.Sdk.Api
+#pragma warning disable CS1591
+namespace Dynatrace.OneAgent.Sdk.Api.Enums
 {
     /// <summary>
-    /// Interface for outgoing remote call tracer.
+    /// Encapsulates all well-known messaging destination types.
+    /// <see cref="IOneAgentSdk.CreateMessagingSystemInfo"/>
     /// </summary>
-    public interface IOutgoingRemoteCallTracer : ITracer, IOutgoingTaggable
-	{
-        /// <summary>
-        /// Sets the name of the used remoting protocol. This is completely optional and just for display purposes.
-        /// </summary>
-		void SetProtocolName(string protocolName);
+	public enum MessageDestinationType
+    {
+        QUEUE,
+        TOPIC
 	}
 }
+#pragma warning restore CS1591

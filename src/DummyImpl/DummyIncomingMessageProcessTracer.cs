@@ -19,10 +19,8 @@ using System.Threading.Tasks;
 
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
-    internal class DummyOutgoingRemoteCallTracer : IOutgoingRemoteCallTracer
+    internal class DummyIncomingMessageProcessTracer : IIncomingMessageProcessTracer
     {
-        private static byte[] dummyByteTag = new byte[0];
-
         public void Start() { }
 
         public Task StartAsync() => Task.FromResult(0);
@@ -48,10 +46,12 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
             return func != null ? func() : null;
         }
 
-        public byte[] GetDynatraceByteTag() => dummyByteTag;
+        public void SetDynatraceByteTag(byte[] tag) { }
 
-        public string GetDynatraceStringTag() => string.Empty;
+        public void SetDynatraceStringTag(string tag) { }
 
-        public void SetProtocolName(string protocolName) { }
+        public void SetCorrelationId(string correlationId) { }
+
+        public void SetVendorMessageId(string vendorMessageId) { }
     }
 }

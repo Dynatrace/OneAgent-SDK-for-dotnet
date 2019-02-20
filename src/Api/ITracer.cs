@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Dynatrace LLC
+// Copyright 2019 Dynatrace LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ namespace Dynatrace.OneAgent.Sdk.Api
     /// Not to be directly used by SDK user.
     /// </summary>
     public interface ITracer
-	{
+    {
 
 		/// <summary>
 		///  Starts this Tracer for a synchronous call.
 		///  This will capture all entry fields of the Tracer and start the time measurement.
-		///  Some entry fields must be set, before the Tracer is being started.
+		///  Some entry fields must be set before the Tracer is started.
 		///  See documentation of corresponding field for details.
 		///  In case no other restriction is documented, fields must be set prior calling End().
 		///  Start() might only be called once per Tracer.
@@ -79,25 +79,25 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <returns>The return value of the wrapped method (or default(T) if func==null)</returns>
         T Trace<T>(Func<T> func);
 
-        /// <summary><![CDATA[
+        /// <summary>
         /// Convenience method.
-        /// Traces a Func<Task>, which represents an asynchronous call
+        /// Traces a Func{Task}, which represents an asynchronous call
         /// without a return value. It automatically calls StartAsync() and End(), 
         /// and in case of an exception also the Error(string) method.
-        /// ]]></summary>
+        /// </summary>
         /// <param name="func">A func that wraps the method call you want to trace</param>
         /// <returns>The task that you wrapped in the Task, which you can await on (or null if func==null)</returns>
         Task TraceAsync(Func<Task> func);
 
-        /// <summary><![CDATA[
+        /// <summary>
         /// Convenience method.
-        /// Traces a Func<Task<T>>, which represents an asynchronous call
+        /// Traces a Func{Task{T}}, which represents an asynchronous call
         /// with a return value. It automatically calls StartAsync() and End(), 
         /// and in case of an exception also the Error(string) method.
-        /// ]]></summary>
+        /// </summary>
         /// <typeparam name="T">The return type of the wrapped method</typeparam>
         /// <param name="func">A func that wraps the method call you want to trace</param>
-        /// <returns><![CDATA[The task that you wrapped in the Task<T>, which you can await on (or null if func==null)]]></returns>
+        /// <returns>The task that you wrapped in the Task{T}, which you can await on (or null if func==null)></returns>
         Task<T> TraceAsync<T>(Func<Task<T>> func);
-	}
+    }
 }

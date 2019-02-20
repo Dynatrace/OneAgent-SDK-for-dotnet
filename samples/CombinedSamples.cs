@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Dynatrace LLC
+// Copyright 2019 Dynatrace LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             try
             {
                 string outgoingDynatraceStringTag = outgoingRemoteCallTracer.GetDynatraceStringTag();
-                // make the call and transport the tag across to server
+                // make the call and transport the tag across to server to link both sides of the remote call
 
                 // represents server side processing
                 Thread server = new Thread(() =>

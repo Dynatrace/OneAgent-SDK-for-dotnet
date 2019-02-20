@@ -17,13 +17,20 @@
 namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
-    /// Interface for outgoing remote call tracer.
+    /// Interface for outgoing message tracer.
     /// </summary>
-    public interface IOutgoingRemoteCallTracer : ITracer, IOutgoingTaggable
+	public interface IOutgoingMessageTracer : ITracer, IOutgoingTaggable
 	{
         /// <summary>
-        /// Sets the name of the used remoting protocol. This is completely optional and just for display purposes.
+        /// Adds optional information about a traced message: message id provided by messaging system.
         /// </summary>
-		void SetProtocolName(string protocolName);
-	}
+        /// <param name="vendorMessageId">the messageId</param>
+        void SetVendorMessageId(string vendorMessageId);
+
+        /// <summary>
+        /// Adds optional information about a traced message: correlation id used by messaging system.
+        /// </summary>
+        /// <param name="correlationId">correlationId</param>
+        void SetCorrelationId(string correlationId);
+    }
 }
