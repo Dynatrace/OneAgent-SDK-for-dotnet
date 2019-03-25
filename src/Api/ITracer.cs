@@ -26,38 +26,42 @@ namespace Dynatrace.OneAgent.Sdk.Api
     public interface ITracer
     {
 
-		/// <summary>
-		///  Starts this Tracer for a synchronous call.
-		///  This will capture all entry fields of the Tracer and start the time measurement.
-		///  Some entry fields must be set before the Tracer is started.
-		///  See documentation of corresponding field for details.
-		///  In case no other restriction is documented, fields must be set prior calling End().
-		///  Start() might only be called once per Tracer.
-		/// </summary>
-		void Start();
+        /// <summary>
+        ///  Starts this Tracer for a synchronous call.
+        ///  This will capture all entry fields of the Tracer and start the time measurement.
+        ///  Some entry fields must be set before the Tracer is started.
+        ///  See documentation of corresponding field for details.
+        ///  In case no other restriction is documented, fields must be set prior calling End().
+        ///  Start() might only be called once per Tracer.
+        /// </summary>
+        void Start();
 
-		/// <summary>
-		/// Same as Start() for an asynchronous call (which is typically a call with the await keyword).
-		/// </summary>
-		Task StartAsync();
+        /// <summary>
+        /// Same as Start() for an asynchronous call (which is typically a call with the await keyword).
+        /// </summary>
+        Task StartAsync();
 
-		/// <summary>
-		/// Sets error information for this traced operation. An application should call
-		/// this function to notify a Tracer that the traced operations has failed (e.g.
-		/// an Exception has been thrown).
-		/// Error(string) must only be called once. If a traced operation
-		/// results in multiple errors and the application wants all of them to be
-		/// captured, it must concatenate/combine them and then call
-		/// Error(string) once before calling End().
-		/// </summary>
-		/// <param name="message">error message(s)</param>
-		void Error(string message);
+        /// <summary>
+        /// Sets error information for the currently traced operation.
+        /// An application should call this function to notify a Tracer that the traced operations has failed
+        /// (e.g. an Exception was thrown).
+        /// Error(string) must only be called once. If a traced operation results in multiple errors and the 
+        /// application wants all of them to be captured, it must concatenate/combine them and then call
+        /// Error(string) once before calling End().
+        /// </summary>
+        /// <param name="message">error message(s)</param>
+        void Error(string message);
 
-		/// <summary>
-		/// Ends this Tracer and stops time measurement. End() might only be called
-		/// once per Tracer.
-		/// </summary>
-		void End();
+        /// <summary>
+        /// <see cref="Error(string)"/>
+        /// </summary>
+        void Error(Exception exception);
+
+        /// <summary>
+        /// Ends this Tracer and stops time measurement. End() might only be called
+        /// once per Tracer.
+        /// </summary>
+        void End();
 
         /// <summary>
         /// Convenience method.

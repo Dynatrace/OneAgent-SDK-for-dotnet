@@ -67,11 +67,31 @@ namespace Dynatrace.OneAgent.Sdk.Test
         }
 
         [Fact]
+        public void StartErrorExceptionEnd()
+        {
+            var tracer = CreateTracer();
+            tracer.Start();
+            tracer.Error(new Exception("some exception"));
+            ExecuteTracerCalls(tracer);
+            tracer.End();
+        }
+
+        [Fact]
         public void StartAsyncErrorEnd()
         {
             var tracer = CreateTracer();
             tracer.StartAsync();
             tracer.Error("error");
+            ExecuteTracerCalls(tracer);
+            tracer.End();
+        }
+
+        [Fact]
+        public void StartAsyncErrorExceptionEnd()
+        {
+            var tracer = CreateTracer();
+            tracer.StartAsync();
+            tracer.Error(new Exception("some exception"));
             ExecuteTracerCalls(tracer);
             tracer.End();
         }

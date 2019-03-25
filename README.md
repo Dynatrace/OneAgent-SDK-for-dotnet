@@ -19,7 +19,9 @@ This is the official .NET implementation of the [Dynatrace OneAgent SDK](https:/
   * [Trace SQL database requests](#trace-sql-database-requests)
   * [Trace remote calls](#trace-remote-calls)
   * [Trace messaging](#trace-messaging)
+  * [In-process linking](#in-process-linking)
   * [Logging callback](#logging-callback)
+  * [SdkState and IOneAgentInfo](#sdkstate-and-ioneagentinfo)
 * [Further reading](#further-readings)
 * [Help & Support](#help--support)
 * [Release notes](#release-notes)
@@ -40,6 +42,7 @@ OneAgent is installed on the host so that your application is not affected by an
 
 |OneAgent SDK for .NET|Required OneAgent version|
 |:-----------------------|:------------------------|
+|1.3.0                   |>=1.165                  |
 |1.2.0                   |>=1.161                  |
 |1.1.0                   |>=1.157                  |
 |1.0.0-alpha             |1.153-1.155              |
@@ -62,7 +65,7 @@ Make sure that:
 
 * OneAgent is installed on the host running your application
 * the installed version of OneAgent is compatible with the SDK version you are using
-  (see [Requirements](#requirements))
+  (see [Requirements](#requirements), check using [SdkState and IOneAgentInfo](#sdkstate-and-ioneagentinfo))
 * process monitoring is enabled in Dynatrace
 * you have set the OneAgent SDK [logging callback](#logging-callback) and check its output
 
@@ -72,7 +75,7 @@ Common concepts of the Dynatrace OneAgent SDK are explained the [Dynatrace OneAg
 
 ### IOneAgentSdk object
 
-Use `OneAgentSdkFactory.CreateInstance` to obtain an OneAgentSDK instance.
+Use `OneAgentSdkFactory.CreateInstance` to obtain an instace of `IOneAgentSDK`, which is used to create tracers and info objects.
 You should reuse this object over the whole application and if possible CLR lifetime:
 
 ```csharp
@@ -81,19 +84,25 @@ IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
 
 ### Tracers
 
-To trace any kind of call you first need to create a Tracer. The Tracer object represents the logical and physical endpoint that you want to call. A Tracer serves two purposes. First to time the call (duration, cpu and more) and report errors. That is why each Tracer has these three methods. The `Error` method must be called only once, and it must be in between `Start` and `End`. Each Tracer can only be used once and you need to create a new instance for each request/call that you want to trace (i.e., `Start` cannot be called twice on the same instance).
+To trace any kind of call you first need to create a Tracer. The Tracer object represents the logical and physical endpoint that you want to call. A Tracer serves two purposes. First to time the call (duration, cpu and more) and report errors. That is why each Tracer has these four methods. Either one of the `Error` methods must be called at most once, and it must be in between `Start` and `End`. Each Tracer can only be used once and you need to create a new instance for each request/call that you want to trace (i.e., `Start` cannot be called twice on the same instance).
 
 ```csharp
 void Start();
+
+void Error(Exception exception);
 
 void Error(String message);
 
 void End();
 ```
 
-The Start method only supports synchronous methods (in other words C# methods without the async keyword). If you call Start() in an async method, then with high probability the SDK won't capture the specific data.
+The `Start` method only supports synchronous methods (in other words C# methods without the `async` keyword). If you call `Start()` in an async method, then with high probability the SDK won't capture the specific data.
 
-To support asynchronous methods (which are C# methods that are marked with the async keyword) the SDK offers a StartAsync() method.
+To support asynchronous methods (which are C# methods that are marked with the async keyword) the SDK offers a `StartAsync()` method.
+
+```csharp
+Task StartAsync();
+```
 
 Sample usage:
 
@@ -109,9 +118,10 @@ public static async Task SampleMethodAsync()
     {
         await DatabaseApi.AsyncDatabaseCall();
     }
-    catch
+    catch (Exception e)
     {
-        dbTracer.Error("DB call failed");
+        dbTracer.Error(e);
+        // handle or rethrow
     }
     finally
     {
@@ -121,6 +131,16 @@ public static async Task SampleMethodAsync()
 ```
 
 Additionally the SDK also offers a convenient `Trace` method. This method can be called in both asynchronous and synchronous methods. In case of an async method you can pass the given async method to the `TraceAsync` method and await on the result of the `TraceAsync` method.
+
+```csharp
+void Trace(Action action);
+
+T Trace<T>(Func<T> func);
+
+Task TraceAsync(Func<Task> func);
+
+Task<T> TraceAsync<T>(Func<Task<T>> func);
+```
 
 Sample usage:
 
@@ -150,12 +170,13 @@ The feature sets differ slightly with each language implementation. More functio
 
 A more detailed specification of the features can be found in [Dynatrace OneAgent SDK](https://github.com/Dynatrace/OneAgent-SDK).
 
-|Feature                                  |Required OneAgent SDK for .NET  version|
-|:------                                  |:--------------------------------------|
-|Trace messaging                          |>=1.2.0                                |
-|Trace remote calls                       |>=1.1.0                                |
-|Logging callback                         |>=1.1.0                                |
-|Trace SQL database requests              |>=1.0.0-alpha                          |
+|Feature                                           |Required OneAgent SDK for .NET  version|
+|:-------------------------------------------------|:--------------------------------------|
+|In-process linking, `SdkState` and `IOneAgentInfo`|>=1.3.0                                |
+|Trace messaging                                   |>=1.2.0                                |
+|Trace remote calls                                |>=1.1.0                                |
+|Logging callback                                  |>=1.1.0                                |
+|Trace SQL database requests                       |>=1.0.0-alpha                          |
 
 ### Trace SQL database requests
 
@@ -172,9 +193,9 @@ try
 {
     ExecuteDbCallVoid();
 }
-catch
+catch (Exception e)
 {
-    dbTracer.Error("DB call failed");
+    dbTracer.Error(e);
     // handle or rethrow
 }
 finally
@@ -194,9 +215,9 @@ try
 {
     await ExecuteDbCallVoidAsync();
 }
-catch
+catch (Exception e)
 {
-    dbTracer.Error("DB call failed");
+    dbTracer.Error(e);
     // handle or rethrow
 }
 finally
@@ -230,11 +251,11 @@ outgoingRemoteCallTracer.Start();
 try
 {
     string tag = outgoingRemoteCallTracer.GetDynatraceStringTag();
-    // make the call and transport the tag across to server to link both sides of the remote call together
+    // make the call and transport the tag across to the server to link both sides of the remote call together
 }
 catch (Exception e)
 {
-    outgoingRemoteCallTracer.Error(e.Message);
+    outgoingRemoteCallTracer.Error(e);
     // handle or rethrow
 }
 finally
@@ -250,7 +271,7 @@ IIncomingRemoteCallTracer incomingRemoteCallTracer = oneAgentSdk
     .TraceIncomingRemoteCall("RemoteMethod", "RemoteServiceName", "mrcp://endpoint/service");
 
 string incomingDynatraceStringTag = ...; // retrieve from incoming call metadata
- // link both sides of remote call together
+ // link both sides of the remote call together
 incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag);
 
 incomingRemoteCallTracer.Start();
@@ -261,7 +282,7 @@ try
 }
 catch (Exception e)
 {
-    incomingRemoteCallTracer.Error(e.Message);
+    incomingRemoteCallTracer.Error(e);
     // handle or rethrow
 }
 finally
@@ -295,7 +316,7 @@ try
     message.CorrelationId = "my-correlation-id-1234"; // optional, determined by application
 
     // transport the Dynatrace tag along with the message to allow the outgoing message tracer to be linked
-    // together with the message processing tracer on the receiving side
+    // with the message processing tracer on the receiving side
     message.Headers[OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME] = outgoingMessageTracer.GetDynatraceByteTag();
 
     SendResult result = MyMessagingSystem.SendMessage(message);
@@ -303,11 +324,11 @@ try
     outgoingMessageTracer.SetCorrelationId(message.CorrelationId);    // optional
     outgoingMessageTracer.SetVendorMessageId(result.VendorMessageId); // optional
 }
-catch(Exception ex)
+catch (Exception e)
 {
-    outgoingMessageTracer.Error(ex.Message);
+    outgoingMessageTracer.Error(e);
     // handle or rethrow
-    throw ex;
+    throw e;
 }
 finally
 {
@@ -348,22 +369,22 @@ try
     {
         ProcessMessage(message); // do the work ...
     }
-    catch (Exception ex)
+    catch (Exception e)
     {
-        processTracer.Error(ex.Message);
+        processTracer.Error(e);
         // handle or rethrow
-        throw ex;
+        throw e;
     }
     finally
     {
         processTracer.End();
     }
 }
-catch (Exception ex)
+catch (Exception e)
 {
-    receiveTracer.Error(ex.Message);
+    receiveTracer.Error(e);
     // handle or rethrow
-    throw ex;
+    throw e;
 }
 finally
 {
@@ -385,7 +406,7 @@ void OnMessageReceived(ReceiveResult receiveResult)
     Message message = receiveResult.Message;
 
     IIncomingMessageProcessTracer processTracer = oneAgentSdk.TraceIncomingMessageProcess(messagingSystemInfo);
-    
+
     // retrieve Dynatrace tag created using the outgoing message tracer to link both sides together:
     if (message.Headers.ContainsKey(OneAgentSdkConstants.DYNATRACE_MESSAGE_PROPERTYNAME))
     {
@@ -399,11 +420,11 @@ void OnMessageReceived(ReceiveResult receiveResult)
     {
         ProcessMessage(message); // do the work ...
     }
-    catch (Exception ex)
+    catch (Exception e)
     {
-        processTracer.Error(ex.Message);
+        processTracer.Error(e);
         // handle or rethrow
-        throw ex;
+        throw e;
     }
     finally
     {
@@ -411,6 +432,32 @@ void OnMessageReceived(ReceiveResult receiveResult)
     }
 }
 ```
+
+### In-process linking
+
+In order to trace interactions between different threads, so-called in-process links are used. An in-process link is created on the originating thread and then used for creating an `IInProcessLinkTracer` on the target thread.
+
+Calls detected while the tracer is active (i.e., between `Start` and `End` or within any of the `Trace` methods) are traced as part of the originating service call. This works for calls detected out of the box by the OneAgent as well as calls traced using the OneAgent SDK.
+
+```csharp
+// create an in-process link on the originating thread
+IInProcessLink inProcessLink = SampleApplication.OneAgentSdk.CreateInProcessLink();
+
+// delegate work to another thread, in this case we use a custom background worker implementation
+customBackgroundWorker.EnqueueWorkItem(() =>
+{
+    // use the in-process link to link the trace on the target thread to its origin
+    IInProcessLinkTracer inProcessLinkTracer = SampleApplication.OneAgentSdk.TraceInProcessLink(inProcessLink);
+    inProcessLinkTracer.Start();
+    // processing and performing further calls...
+    inProcessLinkTracer.End();
+
+    // calls executed after ending the IInProcessLinkTracer will
+    // *not* be traced as part of the originating service call
+});
+```
+
+Note that you can re-use in-process links to create multiple in-process link tracers.
 
 ### Logging callback
 
@@ -432,6 +479,41 @@ public static void Main(string[] args)
 ```
 
 In general it is a good idea to forward these logging events to your application specific logging framework.
+
+### SdkState and IOneAgentInfo
+
+For troubleshooting and avoiding any ineffective tracing calls you can check the state of the SDK as follows:
+
+```csharp
+    IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+    SdkState state = oneAgentSdk.CurrentState;
+    switch (state)
+    {
+        case SdkState.ACTIVE:               // SDK ready for use
+        case SdkState.TEMPORARILY_INACTIVE: // capturing disabled, tracing calls can be spared
+        case SdkState.PERMANENTLY_INACTIVE: // SDK permanently inactive, tracing calls can be spared
+    }
+```
+
+It is good practice to check the SDK state regularly as it may change at every point of time (except PERMANENTLY_INACTIVE, which never changes over application lifetime).
+
+Information about the OneAgent used by the SDK can be retrieved using `IOneAgentInfo`:
+
+```csharp
+    IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+    IOneAgentInfo agentInfo = oneAgentSdk.AgentInfo;
+    if (agentInfo.AgentFound)
+    {
+        Console.WriteLine($"OneAgent Version: {agentInfo.Version}");
+        if (agentInfo.AgentCompatible)
+        {
+            // agent is fully compatible with current SDK version
+        }
+    }
+```
+
+See [SdkState.cs](./src/Api/Enums/SdkState.cs) and [IOneAgentInfo.cs](./src/Api/Infos/IOneAgentInfo.cs)
+for further information.
 
 ## Further readings
 
@@ -468,6 +550,7 @@ see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/release
 
 |Version    |Description                                  |
 |:----------|:--------------------------------------------|
+|1.3.0      |Adds in-process linking, `ITracer.Error(Exception)`, `SdkState` and `IOneAgentInfo` |
 |1.2.0      |Adds message tracing                         |
 |1.1.0      |First GA release - starting with this version OneAgent SDK for .NET is now officially supported by Dynatrace|
 |1.1.0-alpha|Adds remote call tracing and logging callback|

@@ -21,6 +21,7 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
     internal class OneAgentSdkDummy : IOneAgentSdk
     {
+        private readonly DummyOneAgentInfo dummyOneAgentInfo = new DummyOneAgentInfo();
         private readonly DummyDatabaseInfo dummyDatabaseInfo = new DummyDatabaseInfo();
         private readonly DummyDatabaseRequestTracer dummyDatabaseRequestTracer = new DummyDatabaseRequestTracer();
         private readonly DummyIncomingRemoteCallTracer dummyIncomingRemoteCallTracer = new DummyIncomingRemoteCallTracer();
@@ -29,6 +30,12 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         private readonly DummyOutgoingMessageTracer dummyOutgoingMessageTracer = new DummyOutgoingMessageTracer();
         private readonly DummyIncomingMessageReceiveTracer dummyIncomingMessageReceiveTracer = new DummyIncomingMessageReceiveTracer();
         private readonly DummyIncomingMessageProcessTracer dummyIncomingMessageProcessTracer = new DummyIncomingMessageProcessTracer();
+        private readonly DummyInProcessLink dummyInProcessLink = new DummyInProcessLink();
+        private readonly DummyInProcessLinkTracer dummyInProcessLinkTracer = new DummyInProcessLinkTracer();
+
+        public SdkState CurrentState => SdkState.PERMANENTLY_INACTIVE;
+
+        public IOneAgentInfo AgentInfo => dummyOneAgentInfo;
 
         public IDatabaseInfo CreateDatabaseInfo(string name, string vendor, ChannelType channelType, string channelEndpoint)
             => dummyDatabaseInfo;
@@ -58,5 +65,8 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         public IIncomingMessageProcessTracer TraceIncomingMessageProcess(IMessagingSystemInfo messagingSystem)
             => dummyIncomingMessageProcessTracer;
 
+        public IInProcessLink CreateInProcessLink() => dummyInProcessLink;
+
+        public IInProcessLinkTracer TraceInProcessLink(IInProcessLink inProcessLink) => dummyInProcessLinkTracer;
     }
 }

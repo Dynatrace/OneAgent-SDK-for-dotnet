@@ -53,11 +53,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 outgoingMessageTracer.SetCorrelationId(message.CorrelationId);    // optional
                 outgoingMessageTracer.SetVendorMessageId(result.VendorMessageId); // optional
             }
-            catch(Exception ex)
+            catch (Exception e)
             {
-                outgoingMessageTracer.Error(ex.Message);
+                outgoingMessageTracer.Error(e);
                 // handle or rethrow
-                throw ex;
+                throw e;
             }
             finally
             {
@@ -102,22 +102,22 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 {
                     ProcessMessage(message); // do the work ...
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    processTracer.Error(ex.Message);
+                    processTracer.Error(e);
                     // handle or rethrow
-                    throw ex;
+                    throw e;
                 }
                 finally
                 {
                     processTracer.End();
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                receiveTracer.Error(ex.Message);
+                receiveTracer.Error(e);
                 // handle or rethrow
-                throw ex;
+                throw e;
             }
             finally
             {
@@ -155,11 +155,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             {
                 ProcessMessage(message); // do the work ...
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                processTracer.Error(ex.Message);
+                processTracer.Error(e);
                 // handle or rethrow
-                throw ex;
+                throw e;
             }
             finally
             {
@@ -196,11 +196,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 outgoingTracer.SetCorrelationId(message.CorrelationId);    // optional
                 outgoingTracer.SetVendorMessageId(result.VendorMessageId); // optional
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                outgoingTracer.Error(ex.Message);
+                outgoingTracer.Error(e);
                 // handle or rethrow
-                throw ex;
+                throw e;
             }
             finally
             {
@@ -235,22 +235,22 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                     {
                         ProcessMessage(message); // do the work ...
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        processTracer.Error(ex.Message);
+                        processTracer.Error(e);
                         // handle or rethrow
-                        throw ex;
+                        throw e;
                     }
                     finally
                     {
                         processTracer.End();
                     }
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    receiveTracer.Error(ex.Message);
+                    receiveTracer.Error(e);
                     // handle or rethrow
-                    throw ex;
+                    throw e;
                 }
                 finally
                 {

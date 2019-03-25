@@ -17,6 +17,7 @@
 using Dynatrace.OneAgent.Sdk.Api;
 using Dynatrace.OneAgent.Sdk.Api.Enums;
 using Dynatrace.OneAgent.Sdk.Api.Infos;
+using Xunit;
 
 namespace Dynatrace.OneAgent.Sdk.Test
 {
@@ -33,6 +34,24 @@ namespace Dynatrace.OneAgent.Sdk.Test
         {
             tracer.SetRowsReturned(42);
             tracer.SetRoundTripCount(1);
+        }
+
+        [Fact]
+        private void CreateInfoNullValues()
+        {
+            Assert.NotNull(OneAgentSdk.CreateDatabaseInfo(null, null, ChannelType.TCP_IP, null));
+        }
+
+        [Fact]
+        private void TraceNullInfo()
+        {
+            Assert.NotNull(OneAgentSdk.TraceSQLDatabaseRequest(null, "SELECT * FROM foo"));
+        }
+
+        [Fact]
+        private void TraceNullSql()
+        {
+            Assert.NotNull(OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, null));
         }
     }
 }

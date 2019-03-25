@@ -17,7 +17,7 @@
 namespace Dynatrace.OneAgent.Sdk.Api
 {
 	/// <summary>
-	/// The logging callback gets called when errors/warnings occurr from OneAgent SDK API calls.
+	/// The logging callback gets called when errors/warnings occur from OneAgent SDK API calls.
 	/// Never call any SDK API, when inside one of these callback methods.
 	/// The log messages are primarily intended as a development and debugging aid and are subject to change,
 	/// please do not try to parse them or assert on them.
