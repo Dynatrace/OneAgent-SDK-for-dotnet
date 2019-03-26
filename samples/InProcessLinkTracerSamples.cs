@@ -47,12 +47,17 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                     inProcessLinkTracer.Start();
                     DatabaseRequestTracerSamples.Sync_StartEnd(); // performs a database request traced using the IDatabaseRequestTracer
                     inProcessLinkTracer.End();
-
-                    // this call performed after ending the IInProcessLinkTracer will *not* be traced as part of the incoming remote call
-                    DatabaseRequestTracerSamples.Sync_StartEnd();
                 });
 
                 // the same link can be re-used multiple times
+                customBackgroundWorker.EnqueueWorkItem(() =>
+                {
+                    IInProcessLinkTracer inProcessLinkTracer = SampleApplication.OneAgentSdk.TraceInProcessLink(inProcessLink);
+                    inProcessLinkTracer.Trace(() =>
+                    {
+                        DatabaseRequestTracerSamples.Sync_StartEnd();
+                    });
+                });
                 customBackgroundWorker.EnqueueWorkItem(() =>
                 {
                     IInProcessLinkTracer inProcessLinkTracer = SampleApplication.OneAgentSdk.TraceInProcessLink(inProcessLink);
