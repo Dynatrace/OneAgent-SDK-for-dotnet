@@ -27,6 +27,8 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 
         public void Error(string message) { }
 
+        public void Error(Exception exception) { }
+
         public void End() { }
 
         public void Trace(Action action) => action?.Invoke();

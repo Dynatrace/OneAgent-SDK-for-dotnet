@@ -47,15 +47,58 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         /// <summary>
         /// CLI for executing the samples provided in the various sample classes
-        /// not related to the SDK or its usage
         /// </summary>
         public static void Main(string[] args)
         {
+            Assembly sdkAssembly = typeof(IOneAgentSdk).GetTypeInfo().Assembly;
+            string assemblyVersion = sdkAssembly.GetName().Version.ToString();
+            string assemblyInformationalVersion = sdkAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+            Console.WriteLine("---------------------------------------------------------------");
+            Console.WriteLine($"OneAgent SDK Version:   {assemblyInformationalVersion} ({assemblyVersion})");
+            Console.WriteLine($"OneAgent SDK State:     {OneAgentSdk.CurrentState}");
+            Console.WriteLine($"OneAgent SDK AgentInfo: AgentFound={OneAgentSdk.AgentInfo.AgentFound}, AgentCompatible={OneAgentSdk.AgentInfo.AgentCompatible}");
+            Console.WriteLine($"                        AgentVersion={OneAgentSdk.AgentInfo.Version ?? "null"}\n");
+
+            string infoMessage;
+            if (OneAgentSdk.AgentInfo.AgentFound)
+            {
+                infoMessage = "A OneAgent was found";
+                if (OneAgentSdk.AgentInfo.AgentCompatible)
+                {
+                    infoMessage += " and is compatible with this SDK version.";
+                }
+                else
+                {
+                    infoMessage += ", but is NOT compatible with SDK version.";
+                }
+            }
+            else
+            {
+                infoMessage = "NO OneAgent was found!";
+            }
+            Console.WriteLine(infoMessage);
+
+            switch (OneAgentSdk.CurrentState)
+            {
+                case Api.Enums.SdkState.ACTIVE:
+                    Console.WriteLine("The SDK is active.");
+                    break;
+                case Api.Enums.SdkState.TEMPORARILY_INACTIVE:
+                    Console.WriteLine("The SDK is temporarily inactive.");
+                    break;
+                case Api.Enums.SdkState.PERMANENTLY_INACTIVE:
+                    Console.WriteLine("The SDK is permanently inactive. Leaving sample app...");
+                    return;
+            }
+            Console.WriteLine("---------------------------------------------------------------\n");
+
             var testClasses = new[]
             {
                 typeof(DatabaseRequestTracerSamples),
                 typeof(RemoteCallTracerSamples),
                 typeof(MessageTracerSamples),
+                typeof(InProcessLinkTracerSamples),
                 typeof(CombinedSamples)
             };
             var testMethods = GetTestMethods(testClasses).ToList();

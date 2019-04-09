@@ -45,9 +45,9 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             {
                 ExecuteDbCallVoid();
             }
-            catch
+            catch (Exception e)
             {
-                dbTracer.Error("DB call failed");
+                dbTracer.Error(e);
                 // handle or rethrow
             }
             finally
@@ -66,9 +66,9 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             {
                 await ExecuteDbCallVoidAsync();
             }
-            catch
+            catch (Exception e)
             {
-                dbTracer.Error("DB call failed");
+                dbTracer.Error(e);
                 // handle or rethrow
             }
             finally
@@ -133,7 +133,8 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Exception in {nameof(Async_Exception_StartAsyncEnd)}, Message: {e.Message}");
+                dbTracer.Error(e);
+                // handle or rethrow
             }
             finally
             {

@@ -15,8 +15,6 @@
 //
 
 using Dynatrace.OneAgent.Sdk.Api;
-using Dynatrace.OneAgent.Sdk.Api.Enums;
-using Dynatrace.OneAgent.Sdk.Api.Infos;
 using Xunit;
 
 namespace Dynatrace.OneAgent.Sdk.Test
@@ -24,21 +22,19 @@ namespace Dynatrace.OneAgent.Sdk.Test
     /// <summary>
     /// See <see cref="DummyTracerTestBase{T}"/>
     /// </summary>
-    public class DummyIncomingRemoteCallTracerTests : DummyTracerTestBase<IIncomingRemoteCallTracer>
+    public class DummyInProcessLinkTracerTests : DummyTracerTestBase<IInProcessLinkTracer>
     {
-        protected override IIncomingRemoteCallTracer CreateTracer() => OneAgentSdk.TraceIncomingRemoteCall("method", "name", "endpoint");
+        protected override IInProcessLinkTracer CreateTracer() => OneAgentSdk.TraceInProcessLink(OneAgentSdk.CreateInProcessLink());
 
-        protected override void ExecuteTracerSpecificCalls(IIncomingRemoteCallTracer tracer)
+        protected override void ExecuteTracerSpecificCalls(IInProcessLinkTracer tracer)
         {
-            tracer.SetProtocolName("protocol");
-            tracer.SetProtocolName("");
-            tracer.SetProtocolName(null);
+            // noop
         }
 
         [Fact]
-        private void TraceNullValues()
+        private void TraceNullLink()
         {
-            Assert.NotNull(OneAgentSdk.TraceIncomingRemoteCall(null, null, null));
+            Assert.NotNull(OneAgentSdk.TraceInProcessLink(null));
         }
     }
 }

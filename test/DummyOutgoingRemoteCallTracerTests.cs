@@ -17,6 +17,7 @@
 using Dynatrace.OneAgent.Sdk.Api;
 using Dynatrace.OneAgent.Sdk.Api.Enums;
 using Dynatrace.OneAgent.Sdk.Api.Infos;
+using Xunit;
 
 namespace Dynatrace.OneAgent.Sdk.Test
 {
@@ -33,6 +34,12 @@ namespace Dynatrace.OneAgent.Sdk.Test
             tracer.SetProtocolName("protocol");
             tracer.SetProtocolName("");
             tracer.SetProtocolName(null);
+        }
+
+        [Fact]
+        private void TraceNullValues()
+        {
+            Assert.NotNull(OneAgentSdk.TraceOutgoingRemoteCall(null, null, null, ChannelType.TCP_IP, null));
         }
     }
 }

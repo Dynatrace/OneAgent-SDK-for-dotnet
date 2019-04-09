@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
-    internal class DummyDatabaseRequestTracer : IDatabaseRequestTracer
+    internal class DummyInProcessLinkTracer : IInProcessLinkTracer
     {
         public void Start() { }
 
@@ -47,9 +47,5 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         {
             return func != null ? func() : null;
         }
-
-        public void SetRoundTripCount(int roundTripCount) { }
-
-        public void SetRowsReturned(int rowsReturned) { }
     }
 }

@@ -17,6 +17,7 @@
 using Dynatrace.OneAgent.Sdk.Api;
 using Dynatrace.OneAgent.Sdk.Api.Enums;
 using Dynatrace.OneAgent.Sdk.Api.Infos;
+using Xunit;
 
 namespace Dynatrace.OneAgent.Sdk.Test
 {
@@ -33,6 +34,12 @@ namespace Dynatrace.OneAgent.Sdk.Test
         protected override void ExecuteTracerSpecificCalls(IIncomingMessageReceiveTracer tracer)
         {
             // noop
+        }
+
+        [Fact]
+        private void TraceNullInfo()
+        {
+            Assert.NotNull(OneAgentSdk.TraceIncomingMessageReceive(null));
         }
     }
 }

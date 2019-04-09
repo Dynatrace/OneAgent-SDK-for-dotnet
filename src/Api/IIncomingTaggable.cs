@@ -18,7 +18,6 @@ namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
     /// Common interface to allow incoming requests to be linked to outgoing requests via tags.
-    /// Not to be referenced directly by SDK users.
     /// </summary>
     public interface IIncomingTaggable
     {
@@ -38,7 +37,8 @@ namespace Dynatrace.OneAgent.Sdk.Api
         void SetDynatraceStringTag(string tag);
 
         /// <summary>
-        /// Same as <see cref="SetDynatraceStringTag(string)"/> but tag is provided in binary format.
+        /// Same as <see cref="SetDynatraceStringTag(string)"/> but tag is passed in binary format
+        /// as returned by <see cref="IOutgoingTaggable.GetDynatraceByteTag"/>
         /// A tag can only be set *before* a tracer is started.
         /// </summary>
         /// <param name="tag">if null or an empty array, the incoming tag will be reset (cleared).</param>

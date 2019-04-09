@@ -26,6 +26,16 @@ namespace Dynatrace.OneAgent.Sdk.Api
     public interface IOneAgentSdk
     {
         /// <summary>
+        /// The current state of the SDK. See <see cref="SdkState"/> for details.
+        /// </summary>
+        SdkState CurrentState { get; }
+
+        /// <summary>
+        /// Detailed information about the OneAgent used by the SDK. See <see cref="IOneAgentInfo"/> for details.
+        /// </summary>
+        IOneAgentInfo AgentInfo { get; }
+
+        /// <summary>
         /// Installs a callback that gets informed, if any SDK action has failed. For details see <see cref="ILoggingCallback"/> interface.
         /// The provided callback must be thread-safe, when using this <see cref="IOneAgentSdk"/> instance in multithreaded environments.
         /// The log messages are primarily intended as a development and debugging aid and are subject to change, please do not try to parse them or assert on them.
@@ -42,7 +52,6 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <param name="serviceName">name of the remote service</param>
         /// <param name="serviceEndpoint">logical deployment endpoint on the server side
         /// In case of a clustered/load balanced service, the serviceEndpoint represents the common logical endpoint (e.g. registry://staging-environment/myservices/serviceA). As such a single serviceEndpoint can have many processes on many hosts that services requests for it.</param>
-        /// <returns>IIncomingRemoteCallTracer instance to work with</returns>
         IIncomingRemoteCallTracer TraceIncomingRemoteCall(string serviceMethod, string serviceName, string serviceEndpoint);
 
         /// <summary>
@@ -57,7 +66,6 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// for UNIX domain sockets: path of domain socket file
         /// for named pipes: name of pipe
         /// </param>
-        /// <returns>IOutgoingRemoteCallTracer instance to work with</returns>
         IOutgoingRemoteCallTracer TraceOutgoingRemoteCall(string serviceMethod, string serviceName, string serviceEndpoint, ChannelType channelType, string channelEndpoint);
 
         #endregion
@@ -74,7 +82,6 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// * for TCP/IP: host name/IP of the server-side (can include port in the form of "host:port")
         /// * for UNIX domain sockets: name of domain socket file
         /// * for named pipes: name of pipe</param>
-        /// <returns>IDatabaseInfo instance to work with</returns>
         IDatabaseInfo CreateDatabaseInfo(string name, string vendor, ChannelType channelType, string channelEndpoint);
 
         /// <summary>
@@ -82,7 +89,6 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// </summary>
         /// <param name="databaseInfo">information about database</param>
         /// <param name="statement">database SQL statement</param>
-        /// <returns>IDatabaseRequestTracer to work with</returns>
         IDatabaseRequestTracer TraceSQLDatabaseRequest(IDatabaseInfo databaseInfo, string statement);
 
         #endregion
@@ -101,29 +107,49 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// * for UNIX domain sockets: name of domain socket file
         /// * for named pipes: name of pipe
         /// </param>
-        /// <returns>IMessagingSystemInfo instance to work with</returns>
         IMessagingSystemInfo CreateMessagingSystemInfo(string vendorName, string destinationName, MessageDestinationType destinationType, ChannelType channelType, string channelEndpoint);
 
         /// <summary>
         /// Creates a tracer for an outgoing asynchronous message (send).
         /// </summary>
         /// <param name="messagingSystem">Information about the messaging system, created using <see cref="CreateMessagingSystemInfo"/></param>
-        /// <returns>IOutgoingMessageTracer instance to work with</returns>
         IOutgoingMessageTracer TraceOutgoingMessage(IMessagingSystemInfo messagingSystem);
 
         /// <summary>
         /// Creates a tracer for an incoming asynchronous message (receive).
         /// </summary>
         /// <param name="messagingSystem">Information about the messaging system, created using <see cref="CreateMessagingSystemInfo"/></param>
-        /// <returns>IIncomingMessageReceiveTracer instance to work with</returns>
         IIncomingMessageReceiveTracer TraceIncomingMessageReceive(IMessagingSystemInfo messagingSystem);
 
         /// <summary>
         /// Creates a tracer for processing (consuming) a received message (onMessage).
         /// </summary>
         /// <param name="messagingSystem">Information about the messaging system, created using <see cref="CreateMessagingSystemInfo"/></param>
-        /// <returns>IIncomingMessageProcessTracer instance to work with</returns>
         IIncomingMessageProcessTracer TraceIncomingMessageProcess(IMessagingSystemInfo messagingSystem);
+
+        #endregion
+
+        #region In-Process Linking
+
+        /// <summary>
+        /// Creates an in-process link.
+        /// An application can call this function to retrieve an in-process link, which can then be used
+        /// to trace related processing at a later time and/or in a different thread.
+        /// </summary>
+        /// <remarks>
+        /// See https://github.com/Dynatrace/OneAgent-SDK#in-process-linking for more information.
+        /// </remarks>
+        /// <returns>An instance of <see cref="IInProcessLink"/> to be used with <see cref="TraceInProcessLink(IInProcessLink)"/></returns>
+        IInProcessLink CreateInProcessLink();
+
+        /// <summary>
+        /// Creates a tracer for tracing asynchronous related processing in the same process.
+        /// </summary>
+        /// <remarks>
+        /// See https://github.com/Dynatrace/OneAgent-SDK#in-process-linking for more information.
+        /// </remarks>
+        /// <param name="inProcessLink">An in-process link retrieved from <see cref="CreateInProcessLink"/></param>
+        IInProcessLinkTracer TraceInProcessLink(IInProcessLink inProcessLink);
 
         #endregion
     }

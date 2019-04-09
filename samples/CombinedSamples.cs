@@ -33,7 +33,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             try
             {
                 string outgoingDynatraceStringTag = outgoingRemoteCallTracer.GetDynatraceStringTag();
-                // make the call and transport the tag across to server to link both sides of the remote call
+                // make the call and transport the tag across to the server to link both sides of the remote call
 
                 // represents server side processing
                 Thread server = new Thread(() =>
@@ -54,7 +54,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                     }
                     catch (Exception e)
                     {
-                        incomingRemoteCallTracer.Error(e.Message);
+                        incomingRemoteCallTracer.Error(e);
                         // handle or rethrow
                     }
                     finally
@@ -67,7 +67,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             }
             catch (Exception e)
             {
-                outgoingRemoteCallTracer.Error(e.Message);
+                outgoingRemoteCallTracer.Error(e);
                 // handle or rethrow
             }
             finally

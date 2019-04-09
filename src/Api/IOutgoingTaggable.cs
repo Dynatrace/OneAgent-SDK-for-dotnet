@@ -18,7 +18,6 @@ namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
     /// Common interface to allow outgoing requests to be linked to incoming requests via tags.
-    /// Not to be referenced directly by SDK users.
     /// </summary>
     public interface IOutgoingTaggable
     {
