@@ -17,10 +17,10 @@
 namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
-    /// Interface for receiving message tracer.
+    /// Tracer used for tracing receiving a message.
     /// </summary>
-	public interface IIncomingMessageReceiveTracer : ITracer
-	{
+    public interface IIncomingMessageReceiveTracer : ITracer
+    {
 
-	}
+    }
 }

@@ -22,14 +22,14 @@ using System.Threading;
 
 namespace Dynatrace.OneAgent.Sdk.Sample
 {
-    public static class InProcessLinkTracerSamples
+    static class InProcessLinkTracerSamples
     {
         public static void InProcessLinkTracerSample()
         {
             // start a custom background worker
             CustomBackgroundWorker customBackgroundWorker = new CustomBackgroundWorker();
 
-            // we're using the incoming remote call tracer to represent an active service call
+            // we're using the incoming remote call tracer as an example for an active service call
             IIncomingRemoteCallTracer incomingRemoteCallTracer = SampleApplication.OneAgentSdk
                         .TraceIncomingRemoteCall("RemoteMethod", "RemoteServiceName", "mrcp://endpoint/service");
 
@@ -42,7 +42,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 // delegate work to another thread, in this case we use a custom background worker implementation
                 customBackgroundWorker.EnqueueWorkItem(() =>
                 {
-                    // use the in-process link to link the trace on the target thread to its origin
+                    // use the in-process link to link the PurePath on the target thread to its origin
                     IInProcessLinkTracer inProcessLinkTracer = SampleApplication.OneAgentSdk.TraceInProcessLink(inProcessLink);
                     inProcessLinkTracer.Start();
                     DatabaseRequestTracerSamples.Sync_StartEnd(); // performs a database request traced using the IDatabaseRequestTracer

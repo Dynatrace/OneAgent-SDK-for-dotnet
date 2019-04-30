@@ -16,24 +16,24 @@
 
 namespace Dynatrace.OneAgent.Sdk.Api
 {
-	/// <summary>
-	/// The logging callback gets called when errors/warnings occur from OneAgent SDK API calls.
-	/// Never call any SDK API, when inside one of these callback methods.
-	/// The log messages are primarily intended as a development and debugging aid and are subject to change,
-	/// please do not try to parse them or assert on them.
-	/// </summary>
-	public interface ILoggingCallback
-	{
-		/// <summary>
-		/// Just a warning. Something is missing, but SDK is working normal.
-		/// </summary>
-		/// <param name="message">Warning message text. Never null</param>
-		void Warn(string message);
+    /// <summary>
+    /// The logging callback gets called when errors/warnings occur from OneAgent SDK API calls.
+    /// Never call any SDK API, when inside one of these callback methods.
+    /// The log messages are primarily intended as a development and debugging aid and are subject to change,
+    /// please do not try to parse them or assert on them.
+    /// </summary>
+    public interface ILoggingCallback
+    {
+        /// <summary>
+        /// Just a warning. Something is missing, but SDK is working normal.
+        /// </summary>
+        /// <param name="message">Warning message text. Never null</param>
+        void Warn(string message);
 
-		/// <summary>
-		/// Something that should be done can't be done (e. g. path couldn't be started).
-		/// </summary>
-		/// <param name="message">Error message text. Never null</param>
-		void Error(string message);
-	}
+        /// <summary>
+        /// Something that should be done can't be done (e. g. path couldn't be started).
+        /// </summary>
+        /// <param name="message">Error message text. Never null</param>
+        void Error(string message);
+    }
 }

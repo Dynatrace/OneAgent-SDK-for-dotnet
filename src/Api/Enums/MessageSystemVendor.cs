@@ -22,7 +22,7 @@ namespace Dynatrace.OneAgent.Sdk.Api.Enums
     /// <see cref="IOneAgentSdk.CreateMessagingSystemInfo"/>
     /// Using these constants ensures that services captured by OneAgentSDK are handled the same way as traced via built-in sensors.
     /// </summary>
-	public static class MessageSystemVendor
+    public static class MessageSystemVendor
     {
         public static string HORNETQ => "HornetQ";
         public static string ACTIVE_MQ => "ActiveMQ";

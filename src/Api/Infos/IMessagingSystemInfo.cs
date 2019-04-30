@@ -17,9 +17,13 @@
 namespace Dynatrace.OneAgent.Sdk.Api.Infos
 {
     /// <summary>
-    /// Type returned by <see cref="IOneAgentSdk.CreateMessagingSystemInfo"/>
+    /// Object created by <see cref="IOneAgentSdk.CreateMessagingSystemInfo"/>
+    /// and used for <see cref="IOneAgentSdk.TraceOutgoingMessage"/>,
+    /// <see cref="IOneAgentSdk.TraceIncomingMessageReceive"/> as well as
+    /// <see cref="IOneAgentSdk.TraceIncomingMessageProcess"/>
     /// </summary>
     public interface IMessagingSystemInfo
     {
-	}
+
+    }
 }

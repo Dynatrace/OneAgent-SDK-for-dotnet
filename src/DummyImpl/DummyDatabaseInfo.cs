@@ -20,9 +20,10 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
 
     internal class DummyDatabaseInfo : IDatabaseInfo
-	{
-		public DummyDatabaseInfo()
-		{
-		}
-	}
+    {
+        public DummyDatabaseInfo()
+        {
+
+        }
+    }
 }

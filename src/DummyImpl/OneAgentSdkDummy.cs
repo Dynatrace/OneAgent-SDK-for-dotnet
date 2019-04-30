@@ -40,18 +40,14 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         public IDatabaseInfo CreateDatabaseInfo(string name, string vendor, ChannelType channelType, string channelEndpoint)
             => dummyDatabaseInfo;
 
+        public IDatabaseRequestTracer TraceSQLDatabaseRequest(IDatabaseInfo databaseInfo, string statement)
+            => dummyDatabaseRequestTracer;
+
         public IIncomingRemoteCallTracer TraceIncomingRemoteCall(string serviceMethod, string serviceName, string serviceEndpoint)
             => dummyIncomingRemoteCallTracer;
 
         public IOutgoingRemoteCallTracer TraceOutgoingRemoteCall(string serviceMethod, string serviceName, string serviceEndpoint, ChannelType channelType, string channelEndpoint)
             => dummyOutgoingRemoteCallTracer;
-
-        public IDatabaseRequestTracer TraceSQLDatabaseRequest(IDatabaseInfo databaseInfo, string statement)
-            => dummyDatabaseRequestTracer;
-
-        public void SetLoggingCallback(ILoggingCallback loggingCallback)
-        {
-        }
 
         public IMessagingSystemInfo CreateMessagingSystemInfo(string vendorName, string destinationName, MessageDestinationType destinationType, ChannelType channelType, string channelEndpoint)
             => dummyMessagingSystemInfo;
@@ -68,5 +64,7 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         public IInProcessLink CreateInProcessLink() => dummyInProcessLink;
 
         public IInProcessLinkTracer TraceInProcessLink(IInProcessLink inProcessLink) => dummyInProcessLinkTracer;
+
+        public void SetLoggingCallback(ILoggingCallback loggingCallback) { }
     }
 }

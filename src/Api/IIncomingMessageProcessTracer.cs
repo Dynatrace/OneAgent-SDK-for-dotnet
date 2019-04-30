@@ -17,14 +17,14 @@
 namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
-    /// Interface for processing message tracer.
+    /// Tracer used for tracing the processing of an incoming message.
     /// </summary>
-	public interface IIncomingMessageProcessTracer : ITracer, IIncomingTaggable
-	{
+    public interface IIncomingMessageProcessTracer : ITracer, IIncomingTaggable
+    {
         /// <summary>
         /// Adds optional information about a traced message: message id provided by messaging system.
         /// </summary>
-        /// <param name="vendorMessageId">the messageId</param>
+        /// <param name="vendorMessageId">messageId</param>
         void SetVendorMessageId(string vendorMessageId);
 
         /// <summary>

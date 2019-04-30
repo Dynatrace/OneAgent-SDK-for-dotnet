@@ -17,13 +17,15 @@
 namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
-    /// Interface for outgoing remote call tracer.
+    /// Tracer used for tracing an outgoing remote call.
     /// </summary>
     public interface IOutgoingRemoteCallTracer : ITracer, IOutgoingTaggable
-	{
+    {
         /// <summary>
-        /// Sets the name of the used remoting protocol. This is completely optional and just for display purposes.
+        /// Sets the name of the used remoting protocol.
+        /// This is optional and only used for display purposes.
+        /// Can only be set before starting the tracer.
         /// </summary>
-		void SetProtocolName(string protocolName);
-	}
+        void SetProtocolName(string protocolName);
+    }
 }

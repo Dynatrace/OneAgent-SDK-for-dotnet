@@ -21,7 +21,7 @@ using System.Threading;
 
 namespace Dynatrace.OneAgent.Sdk.Sample
 {
-    class RemoteCallTracerSamples
+    static class RemoteCallTracerSamples
     {
         public static void OutgoingRemoteCall()
         {

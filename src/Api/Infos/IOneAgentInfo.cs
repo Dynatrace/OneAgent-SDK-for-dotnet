@@ -17,7 +17,8 @@
 namespace Dynatrace.OneAgent.Sdk.Api.Infos
 {
     /// <summary>
-    /// Provides more details about the OneAgent used by the SDK.
+    /// Provides details about the OneAgent used by the SDK.
+    /// Retrieved using <see cref="IOneAgentSdk.AgentInfo"/>.
     /// </summary>
     public interface IOneAgentInfo
     {
