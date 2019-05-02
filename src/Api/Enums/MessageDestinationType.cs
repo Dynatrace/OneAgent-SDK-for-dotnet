@@ -21,10 +21,10 @@ namespace Dynatrace.OneAgent.Sdk.Api.Enums
     /// Encapsulates all well-known messaging destination types.
     /// <see cref="IOneAgentSdk.CreateMessagingSystemInfo"/>
     /// </summary>
-	public enum MessageDestinationType
+    public enum MessageDestinationType
     {
         QUEUE,
         TOPIC
-	}
+    }
 }
 #pragma warning restore CS1591

@@ -21,7 +21,7 @@ using System.Threading;
 
 namespace Dynatrace.OneAgent.Sdk.Sample
 {
-    class CombinedSamples
+    static class CombinedSamples
     {
         public static void RemoteCallWithDatabase()
         {

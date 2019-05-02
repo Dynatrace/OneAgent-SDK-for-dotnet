@@ -17,17 +17,19 @@
 namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
-    /// Constants used in <see cref="IOneAgentSdk"/>
+    /// Constants used for working with the OneAgent SDK.
     /// </summary>
     public static class OneAgentSdkConstants
     {
         /// <summary>
-        /// Using this headername to transport Dynatrace tag inside an outgoing http request ensures compatibility to Dynatrace built-in sensors.
+        /// This HTTP header is used to transport the Dynatrace tag with an HTTP request.
+        /// The tag is used to link traces together and ensures compatibility to OneAgent built-in sensors.
         /// </summary>
         public const string DYNATRACE_HTTP_HEADERNAME = "X-dynaTrace";
 
         /// <summary>
-        /// Using this propertyname to transport Dynatrace tag along with the message, ensures compatibility to Dynatrace built-in sensors.
+        /// This property is used to transport the Dynatrace tag along with a message.
+        /// The tag is used to link traces together and ensures compatibility to OneAgent built-in sensors.
         /// </summary>
         public const string DYNATRACE_MESSAGE_PROPERTYNAME = "dtdTraceTagInfo";
     }

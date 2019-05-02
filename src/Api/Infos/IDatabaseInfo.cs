@@ -17,9 +17,11 @@
 namespace Dynatrace.OneAgent.Sdk.Api.Infos
 {
     /// <summary>
-    /// Type returned by <see cref="IOneAgentSdk.CreateDatabaseInfo"/>
+    /// Object created by <see cref="IOneAgentSdk.CreateDatabaseInfo"/>
+    /// and used for <see cref="IOneAgentSdk.TraceSQLDatabaseRequest"/>
     /// </summary>
     public interface IDatabaseInfo
-	{
-	}
+    {
+
+    }
 }

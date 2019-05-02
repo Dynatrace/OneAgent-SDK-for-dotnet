@@ -17,10 +17,10 @@
 namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
-    /// Interface for outgoing message tracer.
+    /// Tracer used for tracing an outgoing message.
     /// </summary>
-	public interface IOutgoingMessageTracer : ITracer, IOutgoingTaggable
-	{
+    public interface IOutgoingMessageTracer : ITracer, IOutgoingTaggable
+    {
         /// <summary>
         /// Adds optional information about a traced message: message id provided by messaging system.
         /// </summary>

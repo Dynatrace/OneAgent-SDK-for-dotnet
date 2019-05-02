@@ -33,7 +33,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
     ///     There you can add <see cref="Dynatrace.OneAgent.Sdk.Sample.SampleApplication.Main"/> to caputre everything or add
     ///     each of the desired methods of <see cref="Dynatrace.OneAgent.Sdk.Sample.DatabaseRequestTracerSamples"/> separately.
     /// </remarks>
-    public static class DatabaseRequestTracerSamples
+    static class DatabaseRequestTracerSamples
     {
         public static void Sync_StartEnd()
         {

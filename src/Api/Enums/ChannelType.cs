@@ -21,12 +21,12 @@ namespace Dynatrace.OneAgent.Sdk.Api.Enums
     /// Enumerates all well-known communication channel types. 
     /// </summary>
     public enum ChannelType
-	{
-		OTHER,
-		TCP_IP,
-		UNIX_DOMAIN_SOCKET,
-		NAMED_PIPE,
-		IN_PROCESS
-	}
+    {
+        OTHER,
+        TCP_IP,
+        UNIX_DOMAIN_SOCKET,
+        NAMED_PIPE,
+        IN_PROCESS
+    }
 }
 #pragma warning restore CS1591

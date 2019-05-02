@@ -22,15 +22,15 @@ namespace Dynatrace.OneAgent.Sdk.Api
     /// Factory for retrieving instances of <see cref="IOneAgentSdk"/>
     /// </summary>
     public class OneAgentSdkFactory
-	{
+    {
 
-		/// <summary>
-		/// This method returns an instance of the OneAgent SDK.
-		/// </summary>
-		/// <returns></returns>
-		public static IOneAgentSdk CreateInstance()
-		{
-			return new OneAgentSdkDummy();
-		}
-	}
+        /// <summary>
+        /// This method returns an instance of the OneAgent SDK.
+        /// </summary>
+        /// <returns></returns>
+        public static IOneAgentSdk CreateInstance()
+        {
+            return new OneAgentSdkDummy();
+        }
+    }
 }

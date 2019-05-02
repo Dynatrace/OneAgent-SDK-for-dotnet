@@ -23,7 +23,7 @@ using System.Threading;
 
 namespace Dynatrace.OneAgent.Sdk.Sample
 {
-    class MessageTracerSamples
+    static class MessageTracerSamples
     {
         /// <summary>
         /// Produces a message (traced with the <see cref="IOutgoingMessageTracer"/>)
@@ -41,8 +41,10 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             outgoingMessageTracer.Start();
             try
             {
-                Message message = new Message();
-                message.CorrelationId = "my-correlation-id-1234"; // optional, determined by application
+                Message message = new Message
+                {
+                    CorrelationId = "my-correlation-id-1234" // optional, determined by application
+                };
 
                 // transport the Dynatrace tag along with the message to allow the outgoing message tracer to be linked
                 // together with the message processing tracer on the receiving side
@@ -184,8 +186,10 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             outgoingTracer.Start();
             try
             {
-                Message message = new Message();
-                message.CorrelationId = "my-correlation-id-1234"; // optional, determined by application
+                Message message = new Message
+                {
+                    CorrelationId = "my-correlation-id-1234" // optional, determined by application
+                };
 
                 // transport the Dynatrace tag along with the message to allow the outgoing message tracer to be linked
                 // together with the message processing tracer on the receiving side
