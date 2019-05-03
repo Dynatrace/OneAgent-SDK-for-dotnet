@@ -21,6 +21,7 @@ This is the official .NET implementation of the [Dynatrace OneAgent SDK](https:/
   * [Trace remote calls](#trace-remote-calls)
   * [Trace messaging](#trace-messaging)
   * [In-process linking](#in-process-linking)
+  * [Add custom request attributes](#add-custom-request-attributes)
   * [Logging callback](#logging-callback)
   * [SdkState and IOneAgentInfo](#sdkstate-and-ioneagentinfo)
 * [Further reading](#further-readings)
@@ -45,6 +46,7 @@ missing OneAgent dependency.
 
 |OneAgent SDK for .NET|Required OneAgent version|
 |:-----------------------|:------------------------|
+|1.4.0                   |>=1.167                  |
 |1.3.0                   |>=1.165                  |
 |1.2.0                   |>=1.161                  |
 |1.1.0                   |>=1.157                  |
@@ -200,6 +202,7 @@ A more detailed specification of the features can be found in
 
 |Feature                                           |Required OneAgent SDK for .NET  version|
 |:-------------------------------------------------|:--------------------------------------|
+|Custom request attributes                         |>=1.4.0                                |
 |In-process linking, `SdkState` and `IOneAgentInfo`|>=1.3.0                                |
 |Trace messaging                                   |>=1.2.0                                |
 |Trace remote calls                                |>=1.1.0                                |
@@ -507,6 +510,40 @@ customBackgroundWorker.EnqueueWorkItem(() =>
 
 Note that you can re-use in-process links to create multiple in-process link tracers.
 
+### Add custom request attributes
+
+You can use the SDK to add custom request attributes to the currently traced service call.
+These attributes (key-value pairs) can be used to search and filter requests in Dynatrace.
+
+In order to add a custom request attribute, the `AddCustomRequestAttribute` methods are used.
+No reference to a tracer is needed as OneAgent SDK will select the currently active PurePath.
+This may be a PurePath created by OneAgent SDK or a PurePath created by built-in sensors of the OneAgent.
+The methods take two arguments - a key, specifying the name of the attribute, and a value,
+which can be either a `string`, `long` or `double`.
+These methods can be called several times to add multiple attributes to the same request.
+If the same attribute key is used several times, all values will be recorded.
+
+```csharp
+oneAgentSdk.AddCustomRequestAttribute("region", "EMEA");
+oneAgentSdk.AddCustomRequestAttribute("salesAmount", 2500);
+oneAgentSdk.AddCustomRequestAttribute("service-quality", 0.707106);
+
+oneAgentSdk.AddCustomRequestAttribute("account-group", 1);
+oneAgentSdk.AddCustomRequestAttribute("account-group", 2);
+oneAgentSdk.AddCustomRequestAttribute("account-group", 3);
+```
+
+If no service call is currently being traced, the attributes will be discarded.
+Therefore, for calls traced with OneAgent SDK, custom request attributes have to be added *after*
+starting the tracer (or from within an `ITracer.Trace` method) in order to have an active PurePath.  
+Strings exceeding the lengths specified [here](https://github.com/Dynatrace/OneAgent-SDK#string-length)
+will be truncated.
+
+See also our blog post explaining how custom request attributes are configured, displayed and
+analyzed in Dynatrace:
+[Capture any request attributes using OneAgent SDK
+](https://www.dynatrace.com/news/blog/capture-any-request-attributes-using-oneagent-sdk/)
+
 ### Logging callback
 
 The SDK provides a logging-callback to give information back to the calling application in case of an error.
@@ -600,6 +637,7 @@ see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/release
 
 |Version    |Description                                  |
 |:----------|:--------------------------------------------|
+|1.4.0      |Adds custom request attributes |
 |1.3.0      |Adds in-process linking, `ITracer.Error(Exception)`, `SdkState` and `IOneAgentInfo` |
 |1.2.0      |Adds message tracing                         |
 |1.1.0      |First GA release - starting with this version OneAgent SDK for .NET is now officially supported by Dynatrace|

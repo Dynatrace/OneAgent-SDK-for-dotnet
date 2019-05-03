@@ -65,6 +65,12 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 
         public IInProcessLinkTracer TraceInProcessLink(IInProcessLink inProcessLink) => dummyInProcessLinkTracer;
 
+        public void AddCustomRequestAttribute(string key, string value) { }
+
+        public void AddCustomRequestAttribute(string key, long value) { }
+
+        public void AddCustomRequestAttribute(string key, double value) { }
+
         public void SetLoggingCallback(ILoggingCallback loggingCallback) { }
     }
 }

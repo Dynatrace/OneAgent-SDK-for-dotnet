@@ -99,6 +99,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 typeof(RemoteCallTracerSamples),
                 typeof(MessageTracerSamples),
                 typeof(InProcessLinkTracerSamples),
+                typeof(CustomRequestAttributeSamples),
                 typeof(CombinedSamples)
             };
             var testMethods = GetTestMethods(testClasses).ToList();

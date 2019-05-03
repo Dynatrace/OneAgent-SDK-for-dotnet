@@ -152,5 +152,30 @@ namespace Dynatrace.OneAgent.Sdk.Api
         IInProcessLinkTracer TraceInProcessLink(IInProcessLink inProcessLink);
 
         #endregion
+
+        #region Custom request attributes
+
+        /// <summary>
+        /// Adds a custom request attribute (key-value pair) to the currently traced service call.
+        /// These attributes can be used to search and filter requests in Dynatrace.
+        /// These methods can be called several times to add multiple attributes to the same request.
+        /// If the same attribute key is used several times, all values will be recorded.
+        /// If no service call is currently being traced, the attributes will be discarded.
+        /// </summary>
+        /// <param name="key">key of the attribute (required)</param>
+        /// <param name="value">value of the attribute (required)</param>
+        void AddCustomRequestAttribute(string key, string value);
+
+        /// <summary>
+        /// See <see cref="AddCustomRequestAttribute(string, string)"/>.
+        /// </summary>
+        void AddCustomRequestAttribute(string key, long value);
+
+        /// <summary>
+        /// See <see cref="AddCustomRequestAttribute(string, string)"/>.
+        /// </summary>
+        void AddCustomRequestAttribute(string key, double value);
+
+        #endregion
     }
 }
