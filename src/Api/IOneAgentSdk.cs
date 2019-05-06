@@ -177,5 +177,24 @@ namespace Dynatrace.OneAgent.Sdk.Api
         void AddCustomRequestAttribute(string key, double value);
 
         #endregion
+
+        #region Web request tracing
+
+        /// <summary>
+        /// Creates a tracer for an outgoing web request.
+        /// </summary>
+        /// <remarks>
+        /// To allow continuing the PurePath on the server/service side, the sender needs to retrieve a Dynatrace tag using
+        /// <see cref="IOutgoingTaggable.GetDynatraceStringTag"/> from <see cref="IOutgoingWebRequestTracer"/> after starting it
+        /// and send the tag along with the HTTP request in the Dynatrace HTTP request header with the name defined in
+        /// <see cref="OneAgentSdkConstants.DYNATRACE_HTTP_HEADERNAME"/>.
+        /// </remarks>
+        /// <param name="url">
+        /// The target URL. OneAgent will extract any scheme, hostname, port, path and query.
+        /// </param>
+        /// <param name="method">HTTP request method (GET, POST, ...)</param>
+        IOutgoingWebRequestTracer TraceOutgoingWebRequest(string url, string method);
+
+        #endregion
     }
 }

@@ -20,6 +20,7 @@ This is the official .NET implementation of the [Dynatrace OneAgent SDK](https:/
   * [Trace SQL database requests](#trace-sql-database-requests)
   * [Trace remote calls](#trace-remote-calls)
   * [Trace messaging](#trace-messaging)
+  * [Trace web requests](#trace-web-requests)
   * [In-process linking](#in-process-linking)
   * [Add custom request attributes](#add-custom-request-attributes)
   * [Logging callback](#logging-callback)
@@ -202,6 +203,7 @@ A more detailed specification of the features can be found in
 
 |Feature                                           |Required OneAgent SDK for .NET  version|
 |:-------------------------------------------------|:--------------------------------------|
+|Trace outgoing web requests                       |>=1.4.0                                |
 |Custom request attributes                         |>=1.4.0                                |
 |In-process linking, `SdkState` and `IOneAgentInfo`|>=1.3.0                                |
 |Trace messaging                                   |>=1.2.0                                |
@@ -480,6 +482,45 @@ void OnMessageReceived(ReceiveResult receiveResult)
 See also our blog post explaining this feature: [End-to-end tracing for additional message queues with OneAgent SDK
 ](https://www.dynatrace.com/news/blog/end-to-end-tracing-for-additional-message-queues-with-oneagent-sdk/)
 
+### Trace web requests
+
+#### Trace outgoing web requests
+
+You can use the SDK to trace outgoing web requests. This allows tracing web requests performed using HTTP client
+libraries which are not supported by the Dynatrace OneAgent out-of-the-box.
+Always include the Dynatrace header with the request as it is required to match the request on the server side.
+This ensures requests are traced end-to-end when the server is monitored using a OneAgent or OneAgent SDK.
+
+```csharp
+MyCustomHttpRequest request = new MyCustomHttpRequest("https://www.example.com:8080/api/user?group=42&location=Linz", "GET");
+request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
+request.Headers["Accept-Charset"] = "utf-8";
+request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
+request.Headers["X-MyRequestHeader"] = "MyRequestValue";
+
+IOutgoingWebRequestTracer tracer = SampleApplication.OneAgentSdk.TraceOutgoingWebRequest(request.Url, request.Method);
+
+foreach (KeyValuePair<string, string> header in request.Headers)
+{
+    tracer.AddRequestHeader(header.Key, header.Value);
+}
+
+await tracer.TraceAsync(async () =>
+{
+    // set the Dynatrace tracing header to allow linking the request on the server
+    request.Headers[OneAgentSdkConstants.DYNATRACE_HTTP_HEADERNAME] = tracer.GetDynatraceStringTag();
+
+    MyCustomHttpResponse response = await request.ExecuteAsync();
+
+    tracer.SetStatusCode(response.StatusCode);
+
+    foreach (KeyValuePair<string, string> header in response.Headers)
+    {
+        tracer.AddResponseHeader(header.Key, header.Value);
+    }
+});
+```
+
 ### In-process linking
 
 In order to trace interactions between different threads, so-called in-process links are used.
@@ -637,7 +678,7 @@ see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/release
 
 |Version    |Description                                  |
 |:----------|:--------------------------------------------|
-|1.4.0      |Adds custom request attributes |
+|1.4.0      |Adds custom request attributes and outgoing web request tracing |
 |1.3.0      |Adds in-process linking, `ITracer.Error(Exception)`, `SdkState` and `IOneAgentInfo` |
 |1.2.0      |Adds message tracing                         |
 |1.1.0      |First GA release - starting with this version OneAgent SDK for .NET is now officially supported by Dynatrace|
