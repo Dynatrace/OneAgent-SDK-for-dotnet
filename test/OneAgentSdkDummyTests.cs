@@ -59,6 +59,19 @@ namespace Dynatrace.OneAgent.Sdk.Test
             Assert.NotNull(OneAgentSdk.CreateInProcessLink());
         }
 
+        [Fact]
+        public static void AddCustomRequestAttributes()
+        {
+            OneAgentSdk.AddCustomRequestAttribute("test", "test");
+            OneAgentSdk.AddCustomRequestAttribute("test", null);
+            OneAgentSdk.AddCustomRequestAttribute("test", 1L);
+            OneAgentSdk.AddCustomRequestAttribute("test", 1D);
+            OneAgentSdk.AddCustomRequestAttribute(null, "test");
+            OneAgentSdk.AddCustomRequestAttribute(null, null);
+            OneAgentSdk.AddCustomRequestAttribute(null, 1L);
+            OneAgentSdk.AddCustomRequestAttribute(null, 1D);
+        }
+
         class TestLoggingCallback : ILoggingCallback
         {
             public void Error(string message) { }
