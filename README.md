@@ -526,7 +526,7 @@ To trace an incoming web request you first need to create an `IWebApplicationInf
 This info object represents the endpoint of your web server (web server name, application name and context root; see our
 [documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/services-and-transactions/basic-concepts/service-detection-and-naming/#web-request-services)
 for further information).
-This object should be reused for all traced web requests within for the same application.
+This object should be reused for all traced web requests within the same application.
 
 ```csharp
 IWebApplicationInfo webAppInfo =

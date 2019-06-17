@@ -27,7 +27,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
     {
         public static void OutgoingWebRequest()
         {
-            MyCustomHttpRequest request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
+            var request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
             request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
             request.Headers["Accept-Charset"] = "utf-8";
             request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
@@ -59,7 +59,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task OutgoingWebRequestAsync()
         {
-            MyCustomHttpRequest request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
+            var request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
             request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
             request.Headers["Accept-Charset"] = "utf-8";
             request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
@@ -113,7 +113,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             // start tracer
             return tracer.Trace(() =>
             {
-                MyCustomHttpResponse response = new MyCustomHttpResponse();
+                var response = new MyCustomHttpResponse();
 
                 // handle request and build response ...
 
@@ -135,7 +135,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static void LinkedOutgoingIncomingWebRequest()
         {
-            MyCustomHttpRequest request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
+            var request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
             request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
             request.Headers["Accept-Charset"] = "utf-8";
             request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
@@ -176,7 +176,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         private static MyCustomHttpRequest CreateSampleWebRequest()
         {
-            MyCustomHttpRequest request = new MyCustomHttpRequest(
+            var request = new MyCustomHttpRequest(
                 "https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET", "198.51.100.123");
 
             request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
