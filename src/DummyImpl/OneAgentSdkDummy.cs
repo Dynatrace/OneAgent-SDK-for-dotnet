@@ -33,6 +33,8 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         private readonly DummyInProcessLink dummyInProcessLink = new DummyInProcessLink();
         private readonly DummyInProcessLinkTracer dummyInProcessLinkTracer = new DummyInProcessLinkTracer();
         private readonly DummyOutgoingWebRequestTracer dummyOutgoingWebRequestTracer = new DummyOutgoingWebRequestTracer();
+        private readonly DummyWebApplicationInfo dummyWebApplicationInfo = new DummyWebApplicationInfo();
+        private readonly DummyIncomingWebRequestTracer dummyIncomingWebRequestTracer = new DummyIncomingWebRequestTracer();
 
         public SdkState CurrentState => SdkState.PERMANENTLY_INACTIVE;
 
@@ -67,6 +69,12 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         public IInProcessLinkTracer TraceInProcessLink(IInProcessLink inProcessLink) => dummyInProcessLinkTracer;
 
         public IOutgoingWebRequestTracer TraceOutgoingWebRequest(string url, string method) => dummyOutgoingWebRequestTracer;
+
+        public IWebApplicationInfo CreateWebApplicationInfo(string webServerName, string applicationID, string contextRoot)
+            => dummyWebApplicationInfo;
+
+        public IIncomingWebRequestTracer TraceIncomingWebRequest(IWebApplicationInfo webApplicationInfo, string url, string method)
+            => dummyIncomingWebRequestTracer;
 
         public void AddCustomRequestAttribute(string key, string value) { }
 

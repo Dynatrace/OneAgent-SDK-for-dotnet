@@ -47,6 +47,7 @@ missing OneAgent dependency.
 
 |OneAgent SDK for .NET|Required OneAgent version|
 |:-----------------------|:------------------------|
+|1.5.0                   |>=1.171                  |
 |1.4.0                   |>=1.167                  |
 |1.3.0                   |>=1.165                  |
 |1.2.0                   |>=1.161                  |
@@ -203,6 +204,7 @@ A more detailed specification of the features can be found in
 
 |Feature                                           |Required OneAgent SDK for .NET  version|
 |:-------------------------------------------------|:--------------------------------------|
+|Trace incoming web requests                       |>=1.5.0                                |
 |Trace outgoing web requests                       |>=1.4.0                                |
 |Custom request attributes                         |>=1.4.0                                |
 |In-process linking, `SdkState` and `IOneAgentInfo`|>=1.3.0                                |
@@ -492,12 +494,6 @@ Always include the Dynatrace header with the request as it is required to match 
 This ensures requests are traced end-to-end when the server is monitored using a OneAgent or OneAgent SDK.
 
 ```csharp
-MyCustomHttpRequest request = new MyCustomHttpRequest("https://www.example.com:8080/api/user?group=42&location=Linz", "GET");
-request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
-request.Headers["Accept-Charset"] = "utf-8";
-request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
-request.Headers["X-MyRequestHeader"] = "MyRequestValue";
-
 IOutgoingWebRequestTracer tracer = SampleApplication.OneAgentSdk.TraceOutgoingWebRequest(request.Url, request.Method);
 
 foreach (KeyValuePair<string, string> header in request.Headers)
@@ -507,7 +503,7 @@ foreach (KeyValuePair<string, string> header in request.Headers)
 
 await tracer.TraceAsync(async () =>
 {
-    // set the Dynatrace tracing header to allow linking the request on the server
+    // set the Dynatrace tracing header to allow linking the request on the server for end-to-end tracing
     request.Headers[OneAgentSdkConstants.DYNATRACE_HTTP_HEADERNAME] = tracer.GetDynatraceStringTag();
 
     MyCustomHttpResponse response = await request.ExecuteAsync();
@@ -518,6 +514,57 @@ await tracer.TraceAsync(async () =>
     {
         tracer.AddResponseHeader(header.Key, header.Value);
     }
+});
+```
+
+#### Trace incoming web requests
+
+You can use the SDK to trace incoming web requests. This might be useful if Dynatrace does not support
+the web server framework or language processing the incoming web requests.
+
+To trace an incoming web request you first need to create an `IWebApplicationInfo` object.
+This info object represents the endpoint of your web server (web server name, application name and context root; see our
+[documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/services-and-transactions/basic-concepts/service-detection-and-naming/#web-request-services)
+for further information).
+This object should be reused for all traced web requests within the same application.
+
+```csharp
+IWebApplicationInfo webAppInfo =
+    oneAgentSdk.CreateWebApplicationInfo("WebShopProduction", "AuthenticationService", "/api/auth");
+//                                       Web server name      Application ID           Context Root
+```
+
+To trace an incoming web request you then need to create a Tracer object.
+Make sure you provide all HTTP headers from the request to the SDK by calling `AddRequestHeader`.
+This allows both sides of the web requests to be linked together for end-to-end tracing.
+
+```csharp
+IIncomingWebRequestTracer tracer = oneAgentSdk.TraceIncomingWebRequest(webAppInfo, request.Url, request.Method);
+tracer.SetRemoteAddress(request.RemoteClientAddress);
+
+// adding all request headers ensures that tracing headers required
+// for end-to-end linking of requests are provided to the SDK
+foreach (KeyValuePair<string, string> header in request.Headers)
+{
+    tracer.AddRequestHeader(header.Key, header.Value);
+}
+foreach (KeyValuePair<string, string> param in request.PostParameters)
+{
+    tracer.AddParameter(param.Key, param.Value);
+}
+
+// start tracer
+return tracer.Trace(() =>
+{
+    // handle request and build response ...
+
+    foreach (KeyValuePair<string, string> header in response.Headers)
+    {
+        tracer.AddResponseHeader(header.Key, header.Value);
+    }
+    tracer.SetStatusCode(response.StatusCode);
+
+    return response;
 });
 ```
 
@@ -678,6 +725,7 @@ see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/release
 
 |Version    |Description                                  |
 |:----------|:--------------------------------------------|
+|1.5.0      |Adds incoming web request tracing |
 |1.4.0      |Adds custom request attributes and outgoing web request tracing |
 |1.3.0      |Adds in-process linking, `ITracer.Error(Exception)`, `SdkState` and `IOneAgentInfo` |
 |1.2.0      |Adds message tracing                         |

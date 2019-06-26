@@ -195,6 +195,33 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <param name="method">HTTP request method (GET, POST, ...)</param>
         IOutgoingWebRequestTracer TraceOutgoingWebRequest(string url, string method);
 
+        /// <summary>
+        /// Creates an IWebApplicationInfo instance as required for tracing incoming web requests.
+        /// This information determines the identity and name of the resulting web request service in Dynatrace.
+        /// Also see https://www.dynatrace.com/support/help/server-side-services/introduction/how-does-dynatrace-detect-and-name-services/#web-request-services for a detailed description of the parameters.
+        /// </summary>
+        /// <param name="webServerName">
+        /// Logical name of the web server.
+        /// In case of a cluster, every node in the cluster must report the same name here.
+        /// Make sure not to use the host header for this parameter as this may not reflect your actual setup.
+        /// </param>
+        /// <param name="applicationId">Application ID of the web application</param>
+        /// <param name="contextRoot">
+        /// Context root of the application.
+        /// The path of all URLs traced with the returned IWebApplicationInfo should start with the provided context root.
+        /// </param>
+        IWebApplicationInfo CreateWebApplicationInfo(string webServerName, string applicationId, string contextRoot);
+
+        /// <summary>
+        /// Creates a tracer for an incoming web request.
+        /// </summary>
+        /// <param name="webApplicationInfo">IWebApplicationInfo created using <see cref="CreateWebApplicationInfo"/></param>
+        /// <param name="url">
+        /// The requested URL. OneAgent will extract any scheme, hostname, port, path and query.
+        /// </param>
+        /// <param name="method">HTTP request method (GET, POST, ...)</param>
+        IIncomingWebRequestTracer TraceIncomingWebRequest(IWebApplicationInfo webApplicationInfo, string url, string method);
+
         #endregion
     }
 }

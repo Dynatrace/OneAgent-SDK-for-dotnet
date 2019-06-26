@@ -16,7 +16,7 @@
 
 
 using Dynatrace.OneAgent.Sdk.Api;
-using System;
+using Dynatrace.OneAgent.Sdk.Api.Infos;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +27,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
     {
         public static void OutgoingWebRequest()
         {
-            MyCustomHttpRequest request = new MyCustomHttpRequest("https://www.example.com:8080/api/user?group=42&location=Linz", "GET");
+            var request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
             request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
             request.Headers["Accept-Charset"] = "utf-8";
             request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
@@ -39,6 +39,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 tracer.AddRequestHeader(header.Key, header.Value);
             }
 
+            // start tracer and send request
             tracer.Trace(() =>
             {
                 // set the Dynatrace tracing header to allow linking the request on the server
@@ -58,7 +59,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
         public static async Task OutgoingWebRequestAsync()
         {
-            MyCustomHttpRequest request = new MyCustomHttpRequest("https://www.example.com:8080/api/user?group=42&location=Linz", "GET");
+            var request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
             request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
             request.Headers["Accept-Charset"] = "utf-8";
             request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
@@ -71,6 +72,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 tracer.AddRequestHeader(header.Key, header.Value);
             }
 
+            // start tracer and send request
             await tracer.TraceAsync(async () =>
             {
                 // set the Dynatrace tracing header to allow linking the request on the server
@@ -87,18 +89,117 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             });
         }
 
+        private static MyCustomHttpResponse HandleIncomingWebRequest(MyCustomHttpRequest request)
+        {
+            // create web application info object describing our web service
+            IWebApplicationInfo webAppInfo = SampleApplication.OneAgentSdk
+                .CreateWebApplicationInfo("WebShopProduction", "AuthenticationService", "/api/auth");
+
+            IIncomingWebRequestTracer tracer = SampleApplication.OneAgentSdk
+                .TraceIncomingWebRequest(webAppInfo, request.Url, request.Method);
+            tracer.SetRemoteAddress(request.RemoteClientAddress);
+
+            // adding all request headers ensures that tracing headers required
+            // for end-to-end linking of requests are provided to the SDK
+            foreach (KeyValuePair<string, string> header in request.Headers)
+            {
+                tracer.AddRequestHeader(header.Key, header.Value);
+            }
+            foreach (KeyValuePair<string, string> param in request.PostParameters)
+            {
+                tracer.AddParameter(param.Key, param.Value);
+            }
+
+            // start tracer
+            return tracer.Trace(() =>
+            {
+                var response = new MyCustomHttpResponse();
+
+                // handle request and build response ...
+
+                foreach (KeyValuePair<string, string> header in response.Headers)
+                {
+                    tracer.AddResponseHeader(header.Key, header.Value);
+                }
+                tracer.SetStatusCode(response.StatusCode);
+
+                return response;
+            });
+        }
+
+        public static void IncomingWebRequest()
+        {
+            MyCustomHttpRequest sampleRequest = CreateSampleWebRequest();
+            HandleIncomingWebRequest(sampleRequest);
+        }
+
+        public static void LinkedOutgoingIncomingWebRequest()
+        {
+            var request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
+            request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
+            request.Headers["Accept-Charset"] = "utf-8";
+            request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
+
+            IOutgoingWebRequestTracer tracer = SampleApplication.OneAgentSdk.TraceOutgoingWebRequest(request.Url, request.Method);
+
+            foreach (KeyValuePair<string, string> header in request.Headers)
+            {
+                tracer.AddRequestHeader(header.Key, header.Value);
+            }
+
+            // start tracer and send request
+            tracer.Trace(() =>
+            {
+                // set the Dynatrace tracing header to allow linking the request on the server
+                request.Headers[OneAgentSdkConstants.DYNATRACE_HTTP_HEADERNAME] = tracer.GetDynatraceStringTag();
+
+                MyCustomHttpResponse response = null;
+
+                // represents server side processing
+                Thread server = new Thread(() =>
+                {
+                    response = HandleIncomingWebRequest(request);
+                });
+                server.Start();
+                server.Join(); // sync request, wait for result
+
+                tracer.SetStatusCode(response.StatusCode);
+
+                foreach (KeyValuePair<string, string> header in response.Headers)
+                {
+                    tracer.AddResponseHeader(header.Key, header.Value);
+                }
+            });
+        }
+
         #region Helper classes for demonstration
+
+        private static MyCustomHttpRequest CreateSampleWebRequest()
+        {
+            var request = new MyCustomHttpRequest(
+                "https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET", "198.51.100.123");
+
+            request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
+            request.Headers["Accept-Charset"] = "utf-8";
+            request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
+            request.Headers["X-MyRequestHeader"] = "MyRequestValue";
+
+            return request;
+        }
 
         private class MyCustomHttpRequest
         {
             public string Url { get; }
             public string Method { get; }
+            public string RemoteClientAddress { get; }
             public IDictionary<string, string> Headers { get; } = new Dictionary<string, string>();
+            public IDictionary<string, string> PostParameters { get; } = new Dictionary<string, string>();
 
-            public MyCustomHttpRequest(string url, string method)
+            public MyCustomHttpRequest(string url, string method, string remoteClientAddress = null)
             {
                 Url = url;
                 Method = method;
+                RemoteClientAddress = remoteClientAddress;
             }
 
             public MyCustomHttpResponse Execute()
