@@ -53,11 +53,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
             string incomingDynatraceStringTag = string.Empty; // retrieve from incoming call metadata
             incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag); // link both sides of the remote call together
+            incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
 
             incomingRemoteCallTracer.Start();
             try
             {
-                incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
                 ProcessRemoteCall();
             }
             catch (Exception e)
@@ -95,11 +95,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
                     string incomingDynatraceStringTag = outgoingDynatraceStringTag; // retrieve from incoming call metadata
                     incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag); // link both sides of the remote call together
+                    incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
 
                     incomingRemoteCallTracer.Start();
                     try
                     {
-                        incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
                         ProcessRemoteCall();
                     }
                     catch (Exception e)
@@ -150,11 +150,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
                     string incomingDynatraceStringTag = outgoingDynatraceStringTag; // retrieve from incoming call metadata
                     incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag); // link both sides of the remote call together
+                    incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
 
                     incomingRemoteCallTracer.Start();
                     try
                     {
-                        incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
                         ProcessRemoteCall();
                     }
                     catch (Exception e)

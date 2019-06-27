@@ -43,12 +43,11 @@ namespace Dynatrace.OneAgent.Sdk.Sample
 
                     string incomingDynatraceStringTag = outgoingDynatraceStringTag; // retrieve from incoming call metadata
                     incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag);
+                    incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
 
                     incomingRemoteCallTracer.Start();
                     try
                     {
-                        incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
-
                         // execute database request on server
                         DatabaseRequestTracerSamples.Sync_StartEnd();
                     }

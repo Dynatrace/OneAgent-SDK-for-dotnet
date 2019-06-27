@@ -319,9 +319,9 @@ IIncomingRemoteCallTracer incomingRemoteCallTracer = oneAgentSdk
 string incomingDynatraceStringTag = ...; // retrieve from incoming call metadata
  // link both sides of the remote call together
 incomingRemoteCallTracer.SetDynatraceStringTag(incomingDynatraceStringTag);
+incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
 
 incomingRemoteCallTracer.Start();
-incomingRemoteCallTracer.SetProtocolName("MyRemoteCallProtocol");
 try
 {
     ProcessRemoteCall();
