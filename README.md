@@ -697,7 +697,7 @@ for further information.
 
 ## Help & Support
 
-The Dynatrace OneAgent SDK for .NET is in GA status. The features are fully supported by Dynatrace.
+The Dynatrace OneAgent SDK for .NET is fully supported by Dynatrace.
 
 ### Get Help
 
