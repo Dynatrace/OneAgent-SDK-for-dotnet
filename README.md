@@ -52,7 +52,7 @@ missing OneAgent dependency.
 |1.3.0                   |>=1.165                  |Supported               |
 |1.2.0                   |>=1.161                  |Supported               |
 |1.1.0                   |>=1.157                  |Supported               |
-|1.0.0-alpha             |1.153-1.155              |EAP not longer supported|
+|1.0.0-alpha             |1.153-1.155              |EAP (not supported)     |
 
 ## Integration
 
