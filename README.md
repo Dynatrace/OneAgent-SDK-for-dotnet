@@ -45,14 +45,14 @@ missing OneAgent dependency.
 * Dynatrace OneAgent (required versions see below)
 * .NET Full Framework >= 4.5 or .NET Core >= 1.0 (the SDK is built using .NET Standard 1.0)
 
-|OneAgent SDK for .NET|Required OneAgent version|
-|:-----------------------|:------------------------|
-|1.5.0                   |>=1.171                  |
-|1.4.0                   |>=1.167                  |
-|1.3.0                   |>=1.165                  |
-|1.2.0                   |>=1.161                  |
-|1.1.0                   |>=1.157                  |
-|1.0.0-alpha             |1.153-1.155              |
+|OneAgent SDK for .NET|Required OneAgent version|Support status|
+|:-----------------------|:------------------------|:-----------------------|
+|1.5.0                   |>=1.171                  |Supported               |
+|1.4.0                   |>=1.167                  |Supported               |
+|1.3.0                   |>=1.165                  |Supported               |
+|1.2.0                   |>=1.161                  |Supported               |
+|1.1.0                   |>=1.157                  |Supported               |
+|1.0.0-alpha             |1.153-1.155              |EAP (not supported)     |
 
 ## Integration
 
@@ -697,7 +697,11 @@ for further information.
 
 ## Help & Support
 
-The Dynatrace OneAgent SDK for .NET is in GA status. The features are fully supported by Dynatrace.
+**Support policy**
+
+The Dynatrace OneAgent SDK for .NET has GA status. The features are fully supported by Dynatrace.
+
+For detailed support policy see [Dynatrace OneAgent SDK help](https://github.com/Dynatrace/OneAgent-SDK#help).
 
 ### Get Help
 
