@@ -61,7 +61,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <param name="serviceName">name of the remote service</param>
         /// <param name="serviceEndpoint">logical deployment endpoint on the server side In case of a clustered/load balanced service, the serviceEndpoint represents the common logical endpoint (e.g. registry://staging-environment/myservices/serviceA) where as the @channelEndpoint represents the actual communication endpoint. As such a single serviceEndpoint can have many channelEndpoints.</param>
         /// <param name="channelType">communication protocol used by remote call</param>
-        /// <param name="channelEndpoint">this represents the communication endpoint for the remote service. This information allows Dynatrace to tie the database requests to a specific process or cloud service. It is optional.
+        /// <param name="channelEndpoint">this represents the communication endpoint for the remote service. It is optional.
         /// for TCP/IP: host name/IP of the server-side (can include port)
         /// for UNIX domain sockets: path of domain socket file
         /// for named pipes: name of pipe

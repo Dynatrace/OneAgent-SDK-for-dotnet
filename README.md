@@ -47,6 +47,7 @@ missing OneAgent dependency.
 
 |OneAgent SDK for .NET|Required OneAgent version|Support status|
 |:-----------------------|:------------------------|:-----------------------|
+|1.6.0                   |>=1.173                  |Supported               |
 |1.5.0                   |>=1.171                  |Supported               |
 |1.4.0                   |>=1.167                  |Supported               |
 |1.3.0                   |>=1.165                  |Supported               |
@@ -202,16 +203,17 @@ for details on upcoming features.
 A more detailed specification of the features can be found in
 [Dynatrace OneAgent SDK](https://github.com/Dynatrace/OneAgent-SDK).
 
-|Feature                                           |Required OneAgent SDK for .NET  version|
-|:-------------------------------------------------|:--------------------------------------|
-|Trace incoming web requests                       |>=1.5.0                                |
-|Trace outgoing web requests                       |>=1.4.0                                |
-|Custom request attributes                         |>=1.4.0                                |
-|In-process linking, `SdkState` and `IOneAgentInfo`|>=1.3.0                                |
-|Trace messaging                                   |>=1.2.0                                |
-|Trace remote calls                                |>=1.1.0                                |
-|Logging callback                                  |>=1.1.0                                |
-|Trace SQL database requests                       |>=1.0.0-alpha                          |
+|Feature                                                                         |Required OneAgent SDK for .NET  version|
+|:-------------------------------------------------------------------------------|:--------------------------------------|
+|Support for W3C Trace Context (`IOutgoingWebRequestTracer.InjectTracingHeaders`)|>=1.6.0                                |
+|Trace incoming web requests                                                     |>=1.5.0                                |
+|Trace outgoing web requests                                                     |>=1.4.0                                |
+|Custom request attributes                                                       |>=1.4.0                                |
+|In-process linking, `SdkState` and `IOneAgentInfo`                              |>=1.3.0                                |
+|Trace messaging                                                                 |>=1.2.0                                |
+|Trace remote calls                                                              |>=1.1.0                                |
+|Logging callback                                                                |>=1.1.0                                |
+|Trace SQL database requests                                                     |>=1.0.0-alpha                          |
 
 ### Trace SQL database requests
 
@@ -503,8 +505,9 @@ foreach (KeyValuePair<string, string> header in request.Headers)
 
 await tracer.TraceAsync(async () =>
 {
-    // set the Dynatrace tracing header to allow linking the request on the server for end-to-end tracing
-    request.Headers[OneAgentSdkConstants.DYNATRACE_HTTP_HEADERNAME] = tracer.GetDynatraceStringTag();
+    // add the Dynatrace tag or W3C Trace Context (based on your configuration) to request headers to allow
+    // the agent in the web server to link the request together for end-to-end tracing
+    tracer.InjectTracingHeaders((key, value) => request.Headers[key] = value);
 
     MyCustomHttpResponse response = await request.ExecuteAsync();
 
@@ -729,6 +732,7 @@ see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/release
 
 |Version    |Description                                  |
 |:----------|:--------------------------------------------|
+|1.6.0      |Adds W3C Trace Context support (`IOutgoingWebRequestTracer.InjectTracingHeaders`)|
 |1.5.0      |Adds incoming web request tracing |
 |1.4.0      |Adds custom request attributes and outgoing web request tracing |
 |1.3.0      |Adds in-process linking, `ITracer.Error(Exception)`, `SdkState` and `IOneAgentInfo` |
