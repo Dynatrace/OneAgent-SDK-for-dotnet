@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+using System;
+
 namespace Dynatrace.OneAgent.Sdk.Api
 {
     /// <summary>
@@ -47,5 +49,52 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// </summary>
         /// <param name="statusCode">HTTP status code returned by server</param>
         void SetStatusCode(int statusCode);
+
+        /// <summary>
+        /// <para>Sets HTTP request headers required for linking requests end-to-end.</para>
+        /// <para>
+        /// Based on your configuration, this method will add the 'X-dynaTrace' header and/or the W3C Trace Context headers ('traceparent' and 'tracestate').<br/>
+        /// Therefore it is no longer necessary to manually add the Dynatrace tag and thus <see cref="IOutgoingTaggable.GetDynatraceStringTag"/>
+        /// must not be used together with this method.
+        /// </para>
+        /// <para>This method can only be called on an active tracer (i.e., between start and end).</para>
+        ///
+        /// <para>Example usage:</para>
+        /// <example><code>
+        /// var requestHeaders = new Dictionary&lt;string, string>();
+        /// outgoingWebRequestTracer.InjectTracingHeaders((name, value) => requestHeaders[name] = value);
+        /// </code></example>
+        /// </summary>
+        ///
+        /// <param name="headerSetter">
+        ///     <para>An Action&lt;string, string> that takes the parameters (name, value) and sets the respective headers on the HTTP request.<br/>
+        ///     If a header with this name already exists, the value is overwritten.</para>
+        ///     <para>First parameter (arg1) = name: a valid HTTP header name, never null or empty<br/>
+        ///     Second parameter (arg2) = value: the header value to be set, never null</para>
+        /// </param>
+        void InjectTracingHeaders(Action<string, string> headerSetter);
+
+        /// <summary>
+        /// <para>Same as <see cref="InjectTracingHeaders(Action{string, string})"/> but the (nullable) parameter <paramref name="carrier"/>
+        /// provided to this method is passed along to <paramref name="headerSetter"/>.</para>
+        ///
+        /// <para>Example usage:</para>
+        /// <example><code>
+        /// var requestHeaders = new Dictionary&lt;string, string>();
+        /// outgoingWebRequestTracer.InjectTracingHeaders((name, value, carrier) => carrier[name] = value, requestHeaders);
+        /// </code></example>
+        /// </summary>
+        ///
+        /// <typeparam name="TCarrier"></typeparam>
+        /// <param name="headerSetter">
+        ///     <para>An Action&lt;string, string> that takes the parameters (name, value) and sets the respective headers on the HTTP request.<br/>
+        ///     If a header with this name already exists, the value is overwritten.</para>
+        ///     First parameter (arg1) = name: a valid HTTP header name, never null or empty<br/>
+        ///     Second parameter (arg2) = value: the header value to be set, never null<br/>
+        ///     Third parameter (arg3) = carrier: the header carrier (i.e., the web request object or its map of headers),
+        ///     as passed to <see cref="InjectTracingHeaders{TCarrier}(Action{string, string, TCarrier}, TCarrier)"/> (could be null therefore)
+        /// </param>
+        /// <param name="carrier">the (nullable) header carrier object passed along to <paramref name="headerSetter"/></param>
+        void InjectTracingHeaders<TCarrier>(Action<string, string, TCarrier> headerSetter, TCarrier carrier);
     }
 }

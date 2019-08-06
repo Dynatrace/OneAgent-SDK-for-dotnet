@@ -42,8 +42,9 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             // start tracer and send request
             tracer.Trace(() =>
             {
-                // set the Dynatrace tracing header to allow linking the request on the server
-                request.Headers[OneAgentSdkConstants.DYNATRACE_HTTP_HEADERNAME] = tracer.GetDynatraceStringTag();
+                // add the Dynatrace tag or W3C Trace Context (based on your configuration) to request headers to allow
+                // the agent in the web server to link the request together for end-to-end tracing
+                tracer.InjectTracingHeaders((key, value) => request.Headers[key] = value); // Option 1: passing a stateful lambda, directly accessing 'request.Headers'
 
                 MyCustomHttpResponse response = request.Execute();
 
@@ -75,8 +76,9 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             // start tracer and send request
             await tracer.TraceAsync(async () =>
             {
-                // set the Dynatrace tracing header to allow linking the request on the server
-                request.Headers[OneAgentSdkConstants.DYNATRACE_HTTP_HEADERNAME] = tracer.GetDynatraceStringTag();
+                // add the Dynatrace tag or W3C Trace Context (based on your configuration) to request headers to allow
+                // the agent in the web server to link the request together for end-to-end tracing
+                tracer.InjectTracingHeaders((key, value, carrier) => carrier[key] = value, request.Headers); // Option 2: passing a stateless implementation, which gets 'request.Headers' passed as 'carrier'
 
                 MyCustomHttpResponse response = await request.ExecuteAsync();
 
@@ -89,7 +91,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             });
         }
 
-        private static MyCustomHttpResponse HandleIncomingWebRequest(MyCustomHttpRequest request)
+        private static MyCustomHttpResponse HandleIncomingWebRequest(MyCustomHttpRequest request, bool sendOutgoingRequest = false)
         {
             // create web application info object describing our web service
             IWebApplicationInfo webAppInfo = SampleApplication.OneAgentSdk
@@ -113,6 +115,19 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             // start tracer
             return tracer.Trace(() =>
             {
+                // send a nested outgoing request for demonstration
+                if (sendOutgoingRequest)
+                {
+                    MyCustomHttpRequest outgoingRequest = new MyCustomHttpRequest("https://www.example.com:8081/api/auditlog", "POST");
+                    IOutgoingWebRequestTracer outgoingTracer = SampleApplication.OneAgentSdk.TraceOutgoingWebRequest(outgoingRequest.Url, outgoingRequest.Method);
+                    outgoingTracer.Trace(() =>
+                    {
+                        outgoingTracer.InjectTracingHeaders((name, value) => outgoingRequest.Headers[name] = value);
+                        MyCustomHttpResponse incomingResponse = outgoingRequest.Execute();
+                        outgoingTracer.SetStatusCode(incomingResponse.StatusCode);
+                    });
+                }
+
                 var response = new MyCustomHttpResponse();
 
                 // handle request and build response ...
@@ -133,6 +148,17 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             HandleIncomingWebRequest(sampleRequest);
         }
 
+        public static void LinkedIncomingOutgoingWebRequestWithTraceContext()
+        {
+            MyCustomHttpRequest sampleRequest = CreateSampleWebRequest();
+
+            // simulate incoming W3C Trace Context (sample taken from W3C spec)
+            sampleRequest.Headers["traceparent"] = "00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01";
+            sampleRequest.Headers["tracestate"] = "rojo=00f067aa0ba902b7,congo=t61rcWkgMzE";
+
+            HandleIncomingWebRequest(sampleRequest, sendOutgoingRequest: true);
+        }
+
         public static void LinkedOutgoingIncomingWebRequest()
         {
             var request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
@@ -150,8 +176,9 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             // start tracer and send request
             tracer.Trace(() =>
             {
-                // set the Dynatrace tracing header to allow linking the request on the server
-                request.Headers[OneAgentSdkConstants.DYNATRACE_HTTP_HEADERNAME] = tracer.GetDynatraceStringTag();
+                // add the Dynatrace tag or W3C Trace Context (based on your configuration) to request headers to allow
+                // the agent in the web server to link the request together for end-to-end tracing
+                tracer.InjectTracingHeaders((key, value) => request.Headers[key] = value); // Option 1: passing a stateful lambda, directly accessing 'request.Headers'
 
                 MyCustomHttpResponse response = null;
 
@@ -159,6 +186,46 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 Thread server = new Thread(() =>
                 {
                     response = HandleIncomingWebRequest(request);
+                });
+                server.Start();
+                server.Join(); // sync request, wait for result
+
+                tracer.SetStatusCode(response.StatusCode);
+
+                foreach (KeyValuePair<string, string> header in response.Headers)
+                {
+                    tracer.AddResponseHeader(header.Key, header.Value);
+                }
+            });
+        }
+
+        public static void LinkedOutgoingIncomingOutgoingWebRequest()
+        {
+            MyCustomHttpRequest request = new MyCustomHttpRequest("https://www.example.com:8080/api/auth/user?group=42&location=Linz", "GET");
+            request.Headers["Accept"] = "application/json; q=1.0, application/xml; q=0.8";
+            request.Headers["Accept-Charset"] = "utf-8";
+            request.Headers["Cache-Control"] = "no-cache,no-store,must-revalidate";
+
+            IOutgoingWebRequestTracer tracer = SampleApplication.OneAgentSdk.TraceOutgoingWebRequest(request.Url, request.Method);
+
+            foreach (KeyValuePair<string, string> header in request.Headers)
+            {
+                tracer.AddRequestHeader(header.Key, header.Value);
+            }
+
+            // start tracer and send request
+            tracer.Trace(() =>
+            {
+                // add the Dynatrace tag or W3C Trace Context (based on your configuration) to request headers to allow
+                // the agent in the web server to link the request together for end-to-end tracing
+                tracer.InjectTracingHeaders((key, value, carrier) => carrier[key] = value, request.Headers); // Option 2: passing a stateless implementation, which gets 'request.Headers' passed as 'carrier'
+
+                MyCustomHttpResponse response = null;
+
+                // represents server side processing
+                Thread server = new Thread(() =>
+                {
+                    response = HandleIncomingWebRequest(request, sendOutgoingRequest: true);
                 });
                 server.Start();
                 server.Join(); // sync request, wait for result

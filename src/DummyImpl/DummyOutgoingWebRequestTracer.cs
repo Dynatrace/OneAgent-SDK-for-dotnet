@@ -59,5 +59,9 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         public void AddResponseHeader(string name, string value) { }
 
         public void SetStatusCode(int statusCode) { }
+
+        public void InjectTracingHeaders(Action<string, string> headerSetter) { }
+
+        public void InjectTracingHeaders<TCarrier>(Action<string, string, TCarrier> headerSetter, TCarrier carrier) { }
     }
 }

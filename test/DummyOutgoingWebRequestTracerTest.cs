@@ -34,6 +34,10 @@ namespace Dynatrace.OneAgent.Sdk.Test
             tracer.AddRequestHeader(null, null);
             tracer.AddResponseHeader("", "");
             tracer.AddResponseHeader(null, null);
+            tracer.InjectTracingHeaders(null);
+            tracer.InjectTracingHeaders((k, v) => { _ = k.Length + v.Length; });
+            tracer.InjectTracingHeaders(null, (object)null);
+            tracer.InjectTracingHeaders((k, v, c) => { _ = k.Length + v.Length; }, (object)null);
         }
 
         [Fact]
