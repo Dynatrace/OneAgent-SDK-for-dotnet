@@ -25,6 +25,7 @@ This is the official .NET implementation of the [Dynatrace OneAgent SDK](https:/
   * [Add custom request attributes](#add-custom-request-attributes)
   * [Logging callback](#logging-callback)
   * [SdkState and IOneAgentInfo](#sdkstate-and-ioneagentinfo)
+  * [Metrics](#metrics)
 * [Further reading](#further-readings)
 * [Help & Support](#help--support)
 * [Release notes](#release-notes)
@@ -47,6 +48,7 @@ missing OneAgent dependency.
 
 |OneAgent SDK for .NET|Required OneAgent version|Support status|
 |:-----------------------|:------------------------|:-----------------------|
+|1.7.0                   |>=1.179                  |Supported               |
 |1.6.0                   |>=1.173                  |Supported               |
 |1.5.0                   |>=1.171                  |Supported               |
 |1.4.0                   |>=1.167                  |Supported               |
@@ -113,13 +115,6 @@ void End();
 The `Start` method only supports synchronous methods (in other words C# methods without the `async` keyword).
 If you call `Start()` in an async method, then with high probability the SDK won't capture the specific data.
 
-To support asynchronous methods (which are C# methods that are marked with the async keyword) the SDK offers
-a method `StartAsync()`.
-
-```csharp
-Task StartAsync();
-```
-
 Sample usage:
 
 ```csharp
@@ -129,10 +124,10 @@ public static async Task SampleMethodAsync()
     IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
     IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
-    await dbTracer.StartAsync(); // instead of Start() we call the StartAsync() method
+    await dbTracer.Start();
     try
     {
-        await DatabaseApi.AsyncDatabaseCall();
+        DatabaseApi.DatabaseCall();
     }
     catch (Exception e)
     {
@@ -144,7 +139,10 @@ public static async Task SampleMethodAsync()
         dbTracer.End();
     }
 }
+
 ```
+
+>*Note*: Previous versions of the OneAgent SDK supported tracing of asynchronous methods (which are C# methods that are marked with the `async` keyword) using the method `StartAsync()`. This method has been deprecated for technical reasons and the recommended way of tracing asynchronous code are the `TraceAsync` methods (see below).
 
 Additionally the SDK also offers a convenient `Trace` method. This method can be called in both asynchronous and
 synchronous methods. In case of an async method you can pass the given async method to the `TraceAsync` method and
@@ -205,6 +203,7 @@ A more detailed specification of the features can be found in
 
 |Feature                                                                         |Required OneAgent SDK for .NET  version|
 |:-------------------------------------------------------------------------------|:--------------------------------------|
+|Metrics                                                                         |>=1.7.0                                |
 |Support for W3C Trace Context (`IOutgoingWebRequestTracer.InjectTracingHeaders`)|>=1.6.0                                |
 |Trace incoming web requests                                                     |>=1.5.0                                |
 |Trace outgoing web requests                                                     |>=1.4.0                                |
@@ -275,8 +274,11 @@ int res = dbTracer.Trace(() => ExecuteDbCallInt());
 ```
 
 See also our initial blog post about the OneAgent SDK for .NET, which shows how databases can be traced using the
-`IDatabaseRequestTracer` and how these traces are presented and analyzed in Dyntrace:
+`IDatabaseRequestTracer` and how these traces are presented and analyzed in Dynatrace:
 [Extend framework support with OneAgent SDK for .NET](https://www.dynatrace.com/news/blog/extend-framework-support-with-oneagent-sdk-for-net-eap/)
+
+Please note that SQL database traces are only created if they occur within some other SDK trace (e.g. incoming remote call)
+or a OneAgent built-in trace (e.g. incoming web request).
 
 ### Trace remote calls
 
@@ -483,8 +485,11 @@ void OnMessageReceived(ReceiveResult receiveResult)
 }
 ```
 
-See also our blog post explaining this feature: [End-to-end tracing for additional message queues with OneAgent SDK
-](https://www.dynatrace.com/news/blog/end-to-end-tracing-for-additional-message-queues-with-oneagent-sdk/)
+See also:
+
+* The documentation on [messaging tracers in the specification repository](https://github.com/Dynatrace/OneAgent-SDK#messaging).
+* This blog post explaining [end-to-end tracing for additional message queues with the OneAgent SDK
+](https://www.dynatrace.com/news/blog/end-to-end-tracing-for-additional-message-queues-with-oneagent-sdk/).
 
 ### Trace web requests
 
@@ -662,14 +667,14 @@ In general it is a good idea to forward these logging events to your application
 For troubleshooting and avoiding any ineffective tracing calls you can check the state of the SDK as follows:
 
 ```csharp
-    IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
-    SdkState state = oneAgentSdk.CurrentState;
-    switch (state)
-    {
-        case SdkState.ACTIVE:               // SDK ready for use
-        case SdkState.TEMPORARILY_INACTIVE: // capturing disabled, tracing calls can be spared
-        case SdkState.PERMANENTLY_INACTIVE: // SDK permanently inactive, tracing calls can be spared
-    }
+IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+SdkState state = oneAgentSdk.CurrentState;
+switch (state)
+{
+    case SdkState.ACTIVE:               // SDK ready for use
+    case SdkState.TEMPORARILY_INACTIVE: // capturing disabled, tracing calls can be spared
+    case SdkState.PERMANENTLY_INACTIVE: // SDK permanently inactive, tracing calls can be spared
+}
 ```
 
 It is good practice to check the SDK state regularly as it may change at every point of time
@@ -678,20 +683,68 @@ It is good practice to check the SDK state regularly as it may change at every p
 Information about the OneAgent used by the SDK can be retrieved using `IOneAgentInfo`:
 
 ```csharp
-    IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
-    IOneAgentInfo agentInfo = oneAgentSdk.AgentInfo;
-    if (agentInfo.AgentFound)
+IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+IOneAgentInfo agentInfo = oneAgentSdk.AgentInfo;
+if (agentInfo.AgentFound)
+{
+    Console.WriteLine($"OneAgent Version: {agentInfo.Version}");
+    if (agentInfo.AgentCompatible)
     {
-        Console.WriteLine($"OneAgent Version: {agentInfo.Version}");
-        if (agentInfo.AgentCompatible)
-        {
-            // agent is fully compatible with current SDK version
-        }
+        // agent is fully compatible with current SDK version
     }
+}
 ```
 
 See [SdkState.cs](./src/Api/Enums/SdkState.cs) and [IOneAgentInfo.cs](./src/Api/Infos/IOneAgentInfo.cs)
 for further information.
+
+### Metrics
+
+**The metrics API is currently part of a preview program and will not work for users outside of the preview program. Visit [Dynatrace Help](https://www.dynatrace.com/support/help/whats-new/preview-and-early-adopter-releases/) for details.**
+
+The SDK supports two **metric value types**: `Integer` and `Float` (double precision floating point).
+You should prefer integer metrics as they are more efficient, unless the loss of precision is unacceptable (but
+consider using a different unit, e.g. integer microseconds instead of floating point seconds).
+
+There are different **kinds of metrics**:
+
+* **Counter**: For all metrics that are counting something like sent/received bytes to/from network.
+Counters should only be used when tracking things in flow, as opposed to state. It reports the `sum`
+only and is the most lightweight metric kind.
+* **Gauge**: For metrics that periodically sample a current state, e.g. temperatures, total number
+of bytes stored on a disk. Gauges report a `min`, `max` and `average` value (but no `sum`).
+* **Statistics**: For event-driven metrics like the packet size of a network interface. This is the most
+heavyweight metric. Reports `min`, `max`, `average` and `count`.
+
+Each combination of metric value type and kind has its own create-function, named `Create<ValueType><MetricKind>Metric` (e.g. `CreateIntegerCounterMetric`).
+
+When creating a metric following information needs to be provided:
+
+* `metricKey` Mandatory - a string identifying the metric. Maximum size is 100 bytes.
+Although it is not recommended, you may create multiple metric instances with the same name, as long as you use the same creation function (metric value type and kind are the same) and the same options.
+Otherwise, using the same metric name multiple times is an error. All metrics with the same name will be aggregated together as if you used only one metric instance.
+* `unit` Optional - a string that will be displayed when browsing for metrics in the Dynatrace UI.
+* `dimensionName` Optional - a string specifying the name of the dimension added to the metric.
+If a name is given here, it's required to set a dimension value during booking samples on the metric. A dimension is like an additional label attached to values, for example a "disk.written.bytes" metric could have a dimension name of "disk-id" and when adding values to it a dimension value would be "/dev/sda1".
+
+```cs
+IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
+
+// create metrics
+IIntegerCounter intCounter = oneAgentSdk.CreateIntegerCounterMetric("aIntCounter");
+IFloatGauge floatGauge = oneAgentSdk.CreateFloatGaugeMetric("aFloatGauge", null, "aDimName" );
+IIntegerStatistics intStatistics = oneAgentSdk.CreateIntegerStatisticsMetric("aIntStat", "aUnit");
+
+// report values
+var random = new System.Random();
+intCounter.IncreaseBy(random.Next(10));
+floatGauge.SetValue(10.0 * random.NextDouble(), "firstDimValue");
+floatGauge.SetValue(10.0 * random.NextDouble(), "secondDimValue");
+intStatistics.AddValue(random.Next(100));
+```
+
+See [MetricSamples.cs](samples/MetricSamples.cs) for more details.
+
 
 ## Further readings
 
@@ -732,6 +785,7 @@ see also [Releases](https://github.com/Dynatrace/OneAgent-SDK-for-dotnet/release
 
 |Version    |Description                                  |
 |:----------|:--------------------------------------------|
+|1.7.0      |Adds metrics support (preview only) and deprecates `ITracer.StartAsync` API method |
 |1.6.0      |Adds W3C Trace Context support (`IOutgoingWebRequestTracer.InjectTracingHeaders`)|
 |1.5.0      |Adds incoming web request tracing |
 |1.4.0      |Adds custom request attributes and outgoing web request tracing |

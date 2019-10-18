@@ -38,7 +38,10 @@ namespace Dynatrace.OneAgent.Sdk.Api
 
         /// <summary>
         /// Same as Start() for an asynchronous call (which is typically a call with the await keyword).
+        /// Note: This method has been deprecated and will be removed from future releases!
+        /// Using TraceAsync for tracing asynchronous calls is encouraged.
         /// </summary>
+        [ObsoleteAttribute("This method is obsolete. Use TraceAsync instead.", false)] 
         Task StartAsync();
 
         /// <summary>
@@ -86,8 +89,8 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <summary>
         /// Convenience method.
         /// Traces a Func{Task}, which represents an asynchronous call
-        /// without a return value. It automatically calls StartAsync() and End(), 
-        /// and in case of an exception also the Error(string) method.
+        /// without a return value. It automatically starts and ends the tracer
+        /// and in case of an exception also calls the Error method.
         /// </summary>
         /// <param name="func">A func that wraps the method call you want to trace</param>
         /// <returns>The task that you wrapped in the Task, which you can await on (or null if func==null)</returns>
@@ -96,8 +99,8 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <summary>
         /// Convenience method.
         /// Traces a Func{Task{T}}, which represents an asynchronous call
-        /// with a return value. It automatically calls StartAsync() and End(), 
-        /// and in case of an exception also the Error(string) method.
+        /// with a return value. It automatically starts and ends the tracer
+        /// and in case of an exception also calls the Error method.
         /// </summary>
         /// <typeparam name="T">The return type of the wrapped method</typeparam>
         /// <param name="func">A func that wraps the method call you want to trace</param>

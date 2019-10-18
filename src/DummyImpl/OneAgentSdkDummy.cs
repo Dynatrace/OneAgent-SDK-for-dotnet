@@ -16,6 +16,7 @@
 
 using Dynatrace.OneAgent.Sdk.Api.Enums;
 using Dynatrace.OneAgent.Sdk.Api.Infos;
+using Dynatrace.OneAgent.Sdk.Api.Metrics;
 
 namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 {
@@ -35,6 +36,12 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         private readonly DummyOutgoingWebRequestTracer dummyOutgoingWebRequestTracer = new DummyOutgoingWebRequestTracer();
         private readonly DummyWebApplicationInfo dummyWebApplicationInfo = new DummyWebApplicationInfo();
         private readonly DummyIncomingWebRequestTracer dummyIncomingWebRequestTracer = new DummyIncomingWebRequestTracer();
+        private readonly DummyIntegerCounter dummyIntegerCounter = new DummyIntegerCounter();
+        private readonly DummyFloatCounter dummyFloatCounter = new DummyFloatCounter();
+        private readonly DummyIntegerGauge dummyIntegerGauge = new DummyIntegerGauge();
+        private readonly DummyFloatGauge dummyFloatGauge = new DummyFloatGauge();
+        private readonly DummyIntegerStatistics dummyIntegerStatistics = new DummyIntegerStatistics();
+        private readonly DummyFloatStatistics dummyFloatStatistics = new DummyFloatStatistics();
 
         public SdkState CurrentState => SdkState.PERMANENTLY_INACTIVE;
 
@@ -83,5 +90,23 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
         public void AddCustomRequestAttribute(string key, double value) { }
 
         public void SetLoggingCallback(ILoggingCallback loggingCallback) { }
+
+        public IIntegerCounter CreateIntegerCounterMetric(string metricKey, string unit, string dimensionName)
+            => dummyIntegerCounter;
+
+        public IFloatCounter CreateFloatCounterMetric(string metricKey, string unit, string dimensionName)
+            => dummyFloatCounter;
+
+        public IIntegerGauge CreateIntegerGaugeMetric(string metricKey, string unit, string dimensionName)
+            => dummyIntegerGauge;
+
+        public IFloatGauge CreateFloatGaugeMetric(string metricKey, string unit, string dimensionName)
+            => dummyFloatGauge;
+
+        public IIntegerStatistics CreateIntegerStatisticsMetric(string metricKey, string unit, string dimensionName)
+            => dummyIntegerStatistics;
+
+        public IFloatStatistics CreateFloatStatisticsMetric(string metricKey, string unit, string dimensionName)
+            => dummyFloatStatistics;
     }
 }

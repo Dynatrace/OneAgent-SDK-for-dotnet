@@ -16,6 +16,7 @@
 
 using Dynatrace.OneAgent.Sdk.Api.Enums;
 using Dynatrace.OneAgent.Sdk.Api.Infos;
+using Dynatrace.OneAgent.Sdk.Api.Metrics;
 
 namespace Dynatrace.OneAgent.Sdk.Api
 {
@@ -221,6 +222,86 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// </param>
         /// <param name="method">HTTP request method (GET, POST, ...)</param>
         IIncomingWebRequestTracer TraceIncomingWebRequest(IWebApplicationInfo webApplicationInfo, string url, string method);
+
+        #endregion
+
+        #region Metrics
+
+        /// <summary>
+        /// <para>Creates an integer counter metric instance. Counters are used for all metrics, that are counting something like sent/received bytes to/from network.</para>
+        /// <para>Counters sum up provided samples and reports the sum only.</para>
+        /// </summary>
+        /// <param name="metricKey">
+        /// Name (tenant-wide ID) of the metric. It must be ASCII-compatible, must not contain NUL characters and must not be longer than 100 bytes.
+        /// If metrics with the same key are created multiple times, it is undefined whether distinct instances are returned.
+        ///</param>
+        /// <param name="unit">
+        /// Unit of the metric. Used as label only. It is optional. Note that you must not report the same
+        /// metric with different units, as that would lead to incorrect aggregation. If you cannot
+        /// ensure consistent units, use a different metric key per unit, e.g. "NORMAL-METRIC-KEY.UNIT-NAME".
+        /// </param>
+        /// <param name="dimensionName">
+        /// Name of dimension. Must be set to a non-empty string, when dimension will be reported 
+        /// on returned counter instance. Must be set to null or empty, when dimension won't be reported.
+        /// </param>
+        /// <returns>
+        /// The metric instance being used for reporting. Returned instances are thread safe and should be reused whenever possible.
+        /// Calling this method twice or more with same metric key might return same instance.
+        /// </returns>
+        IIntegerCounter CreateIntegerCounterMetric(string metricKey, string unit = null, string dimensionName = null);
+
+        /// <summary>
+        /// Floating point variant of <see cref="CreateIntegerCounterMetric(string, string, string)"/>
+        /// </summary>
+        /// <param name="metricKey">Same restrictions apply as for metricKey in <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        IFloatCounter CreateFloatCounterMetric(string metricKey, string unit = null, string dimensionName = null);
+
+        /// <summary>
+        /// <para>
+        /// Creates a gauge metric instance. Gauges can be used for metrics describing a current state like 
+        /// temperature, number of items in a cache.
+        /// </para>
+        /// <para>Gauges are intended for periodical sampling and reporting min, max and average of provided samples.</para>
+        /// </summary>
+        /// <param name="metricKey">Same restrictions apply as for metricKey in <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        IIntegerGauge CreateIntegerGaugeMetric(string metricKey, string unit = null, string dimensionName = null);
+
+        /// <summary>
+        /// Floating point variant of <see cref="CreateIntegerGaugeMetric(string, string, string)"/>
+        /// </summary>
+        /// <param name="metricKey">Same restrictions apply as for metricKey in <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        IFloatGauge CreateFloatGaugeMetric(string metricKey, string unit = null, string dimensionName = null);
+
+        /// <summary>
+        /// <para>
+        /// Creates a statistics metric instance. Statistics can/should be used for event driven metrics like 
+        /// packet size of network interface.
+        /// </para>
+        /// <para>Statistics are reporting min, max, average and count.</para>
+        /// </summary>
+        /// <param name="metricKey">Same restrictions apply as for metricKey in <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        IIntegerStatistics CreateIntegerStatisticsMetric(string metricKey, string unit = null, string dimensionName = null);
+
+        /// <summary>
+        /// Floating point variant of <see cref="CreateIntegerStatisticsMetric(string, string, string)"/>
+        /// </summary>
+        /// <param name="metricKey">Same restrictions apply as for metricKey in <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
+        /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        IFloatStatistics CreateFloatStatisticsMetric(string metricKey, string unit = null, string dimensionName = null);
 
         #endregion
     }

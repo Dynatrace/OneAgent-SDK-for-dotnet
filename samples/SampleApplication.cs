@@ -101,6 +101,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
                 typeof(InProcessLinkTracerSamples),
                 typeof(CustomRequestAttributeSamples),
                 typeof(WebRequestTracerSamples),
+                typeof(MetricSamples),
                 typeof(CombinedSamples)
             };
             var testMethods = GetTestMethods(testClasses).ToList();
