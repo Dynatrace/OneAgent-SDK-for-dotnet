@@ -56,27 +56,6 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             }
         }
 
-        public static async Task Async_StartEnd()
-        {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
-            IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
-
-            await dbTracer.StartAsync();
-            try
-            {
-                await ExecuteDbCallVoidAsync();
-            }
-            catch (Exception e)
-            {
-                dbTracer.Error(e);
-                // handle or rethrow
-            }
-            finally
-            {
-                dbTracer.End();
-            }
-        }
-
         public static void Sync_Lambda()
         {
             IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
@@ -104,42 +83,6 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             IDatabaseRequestTracer dbTracer2 = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo2, "Select * From AA");
 
             int res2 = await dbTracer2.TraceAsync(() => ExecuteDbCallIntAsync());
-        }
-
-        public static async Task Async_StartAsyncEnd_And_Async_Lambda()
-        {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
-            IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
-
-            await dbTracer.StartAsync();
-            await ExecuteDbCallVoidAsync();
-            dbTracer.End();
-
-            IDatabaseInfo dbInfo2 = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb2", "MyVendor2", ChannelType.TCP_IP, "database.example.com:1234");
-            IDatabaseRequestTracer dbTracer2 = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo2, "Select * From AA");
-
-            int res2 = await dbTracer2.TraceAsync(() => ExecuteDbCallIntAsync());
-        }
-
-        public static async Task Async_Exception_StartAsyncEnd()
-        {
-            IDatabaseInfo dbInfo = SampleApplication.OneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
-            IDatabaseRequestTracer dbTracer = SampleApplication.OneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
-
-            await dbTracer.StartAsync();
-            try
-            {
-                await ExecuteDbCallVoidExceptionAsync();
-            }
-            catch (Exception e)
-            {
-                dbTracer.Error(e);
-                // handle or rethrow
-            }
-            finally
-            {
-                dbTracer.End();
-            }
         }
 
         public static async Task Async_Exception_Lambda()
@@ -232,7 +175,6 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             dbTracer.End();                 // Warning: missing Start
             dbTracer.Start();               // ok
             dbTracer.Start();               // Warning: already started
-            dbTracer.StartAsync();          // Warning: already started
             dbTracer.End();                 // ok
             dbTracer.SetRoundTripCount(0);  // Warning: has to be set before End
             dbTracer.SetRowsReturned(0);    // Warning: has to be set before End
