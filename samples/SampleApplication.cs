@@ -75,7 +75,7 @@ namespace Dynatrace.OneAgent.Sdk.Sample
             }
             else
             {
-                infoMessage = "NO OneAgent was found!";
+                infoMessage = "Code module has not been found! Make sure OneAgent is installed and Deep Monitoring is enabled for this process.";
             }
             Console.WriteLine(infoMessage);
 
