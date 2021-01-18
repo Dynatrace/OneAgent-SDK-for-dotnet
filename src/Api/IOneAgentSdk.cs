@@ -1,5 +1,5 @@
 //
-// Copyright 2019 Dynatrace LLC
+// Copyright 2021 Dynatrace LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 
+using System;
 using Dynatrace.OneAgent.Sdk.Api.Enums;
 using Dynatrace.OneAgent.Sdk.Api.Infos;
 using Dynatrace.OneAgent.Sdk.Api.Metrics;
@@ -248,6 +249,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// The metric instance being used for reporting. Returned instances are thread safe and should be reused whenever possible.
         /// Calling this method twice or more with same metric key might return same instance.
         /// </returns>
+        [ObsoleteAttribute("This method is obsolete. Refer to https://github.com/Dynatrace/OneAgent-SDK-for-dotnet#metrics for details.", false)] 
         IIntegerCounter CreateIntegerCounterMetric(string metricKey, string unit = null, string dimensionName = null);
 
         /// <summary>
@@ -257,6 +259,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        [ObsoleteAttribute("This method is obsolete. Refer to https://github.com/Dynatrace/OneAgent-SDK-for-dotnet#metrics for details.", false)] 
         IFloatCounter CreateFloatCounterMetric(string metricKey, string unit = null, string dimensionName = null);
 
         /// <summary>
@@ -270,6 +273,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        [ObsoleteAttribute("This method is obsolete. Refer to https://github.com/Dynatrace/OneAgent-SDK-for-dotnet#metrics for details.", false)] 
         IIntegerGauge CreateIntegerGaugeMetric(string metricKey, string unit = null, string dimensionName = null);
 
         /// <summary>
@@ -279,6 +283,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        [ObsoleteAttribute("This method is obsolete. Refer to https://github.com/Dynatrace/OneAgent-SDK-for-dotnet#metrics for details.", false)] 
         IFloatGauge CreateFloatGaugeMetric(string metricKey, string unit = null, string dimensionName = null);
 
         /// <summary>
@@ -292,6 +297,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        [ObsoleteAttribute("This method is obsolete. Refer to https://github.com/Dynatrace/OneAgent-SDK-for-dotnet#metrics for details.", false)] 
         IIntegerStatistics CreateIntegerStatisticsMetric(string metricKey, string unit = null, string dimensionName = null);
 
         /// <summary>
@@ -301,6 +307,7 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// <param name="unit">See <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <param name="dimensionName">See parameter <c>dimensionName</c> for <see cref="CreateIntegerCounterMetric(string, string, string)"/></param>
         /// <returns>For details see return value of <see cref="CreateIntegerCounterMetric(string, string, string)"/></returns>
+        [ObsoleteAttribute("This method is obsolete. Refer to https://github.com/Dynatrace/OneAgent-SDK-for-dotnet#metrics for details.", false)] 
         IFloatStatistics CreateFloatStatisticsMetric(string metricKey, string unit = null, string dimensionName = null);
 
         #endregion
