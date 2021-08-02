@@ -79,6 +79,11 @@ Make sure that:
 * process monitoring is enabled in Dynatrace
 * you have set the OneAgent SDK [logging callback](#logging-callback) and check its output
 
+Also note that injection of the OneAgent code module will not work if you start your application from within Visual
+Studio. In that case the SDK will behave as if OneAgent is not installed. If you need to debug your application with
+the code module injected, you can start the application from Explorer or `cmd.exe` and then attach Visual Studio as
+debugger to the running process (Debug -> Attach to Process...).
+
 ## API Concepts
 
 Common concepts of the Dynatrace OneAgent SDK are explained the
