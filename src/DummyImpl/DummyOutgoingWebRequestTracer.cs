@@ -25,8 +25,6 @@ namespace Dynatrace.OneAgent.Sdk.Api.DummyImpl
 
         public void Start() { }
 
-        public Task StartAsync() => Task.FromResult(0);
-
         public void Error(string message) { }
 
         public void Error(Exception exception) { }
