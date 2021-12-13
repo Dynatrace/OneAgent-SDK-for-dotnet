@@ -206,7 +206,7 @@ is executed on multiple threads.
 To summarize this, in case of
 
 * synchronous methods you can either use the `Start`, `End` and `Error` methods, or the convenience method `Trace`,
-* asynchronous methods you can either use the `TraceAsync` method.
+* asynchronous methods you can use the `TraceAsync` method.
 
 Some tracers offer methods to provide information in addition to the parameters required for creating the tracer using
 the `IOneAgentSdk` object. These additional pieces of information might be relevant for service detection and naming.
