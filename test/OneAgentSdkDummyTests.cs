@@ -31,6 +31,15 @@ namespace Dynatrace.OneAgent.Sdk.Test
         static IOneAgentSdk OneAgentSdk { get; } = OneAgentSdkFactory.CreateInstance();
 
         [Fact]
+        public static void TraceContextInfo()
+        {
+            ITraceContextInfo traceContextInfo = OneAgentSdk.TraceContextInfo;
+            Assert.False(traceContextInfo.IsValid);
+            Assert.Equal("00000000000000000000000000000000", traceContextInfo.TraceId);
+            Assert.Equal("0000000000000000", traceContextInfo.SpanId);
+        }
+
+        [Fact]
         public static void CurrentState()
         {
             Assert.Equal(SdkState.PERMANENTLY_INACTIVE, OneAgentSdk.CurrentState);

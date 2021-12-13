@@ -37,14 +37,6 @@ namespace Dynatrace.OneAgent.Sdk.Api
         void Start();
 
         /// <summary>
-        /// Same as Start() for an asynchronous call (which is typically a call with the await keyword).
-        /// Note: This method has been deprecated and will be removed from future releases!
-        /// Using TraceAsync for tracing asynchronous calls is encouraged.
-        /// </summary>
-        [ObsoleteAttribute("This method is obsolete. Use TraceAsync instead.", false)] 
-        Task StartAsync();
-
-        /// <summary>
         /// Sets error information for the currently traced operation.
         /// An application should call this function to notify a Tracer that the traced operations has failed
         /// (e.g. an Exception was thrown).

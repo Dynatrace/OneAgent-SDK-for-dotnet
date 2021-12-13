@@ -32,5 +32,19 @@ namespace Dynatrace.OneAgent.Sdk.Api
         /// The tag is used to link traces together and ensures compatibility to OneAgent built-in sensors.
         /// </summary>
         public const string DYNATRACE_MESSAGE_PROPERTYNAME = "dtdTraceTagInfo";
+
+        /// <summary>
+        /// An invalid trace identifier in lowercase hex (base16) representation.
+        /// All characters are "0".
+        /// Returned by <see cref="Infos.ITraceContextInfo.TraceId"/>.
+        /// </summary>
+        public const string INVALID_TRACE_ID = "00000000000000000000000000000000";
+
+        /// <summary>
+        /// An invalid span identifier in lowercase hex (base16) representation.
+        /// All characters are "0".
+        /// Returned by <see cref="Infos.ITraceContextInfo.SpanId"/>.
+        /// </summary>
+        public const string INVALID_SPAN_ID = "0000000000000000";
     }
 }
