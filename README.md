@@ -167,7 +167,7 @@ public static async Task SampleMethodAsync()
 
 ```
 
->*Note*: Previous versions of the OneAgent SDK supported tracing of asynchronous methods (which are C# methods
+> **Note:** Previous versions of the OneAgent SDK supported tracing of asynchronous methods (which are C# methods
 > that are marked with the `async` keyword) using the method `StartAsync()`. This method has been **removed** for
 > technical reasons and the way of tracing asynchronous code is the `TraceAsync` method (see below).
 
