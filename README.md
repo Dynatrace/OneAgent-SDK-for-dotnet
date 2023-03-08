@@ -171,7 +171,7 @@ public static async Task SampleMethodAsync()
 > that are marked with the `async` keyword) using the method `StartAsync()`. This method has been **removed** for
 > technical reasons and the way of tracing asynchronous code is the `TraceAsync` method (see below).
 
-Additionally the SDK also offers a convenient `Trace` method. This method can be called in both asynchronous and
+The SDK also offers a convenient `Trace` method. This method can be called in both asynchronous and
 synchronous methods. In case of an async method you can pass the given async method to the `TraceAsync` method and
 await on the result of the `TraceAsync` method.
 
@@ -198,15 +198,21 @@ public static async Task SampleMethodAsync()
 }
 ```
 
-The `Trace` method internally calls the `Start` method and the `TraceAsync` method calls `StartAsync`.
-In case of an exception they also call the `Error` method. Both finally call the `End` method.
-Additionally, they also take care of collecting timing information across threads in case the C# async method
-is executed on multiple threads.
+The `Trace` method internally calls the `Start` method.
+In case of an exception it also calls the `Error` method and it finally calls the `End` method.
 
 To summarize this, in case of
 
-* synchronous methods you can either use the `Start`, `End` and `Error` methods, or the convenience method `Trace`,
+* synchronous methods you should use the `Trace` method but can also use the `Start`, `End` and `Error` methods
 * asynchronous methods you can use the `TraceAsync` method.
+
+> NOTE: Due to internal limitations `TraceAsync` does not currently reliably connect child nodes. If there are child nodes
+> started during a call to `TraceAsync`, they might be connected to the parent of the `TraceAsync`, if any, might become
+> separate root paths, or might be suppressed entirely.
+>
+> Consider using `Trace` as a workaround, but note that asynchronous parts of the execution after `Trace` returns will
+> not be tracked by the node created by `Trace`. In particular, exceptions thrown in the asynchronous part
+> (approximately after `Trace` returns) are potentially missed.
 
 Some tracers offer methods to provide information in addition to the parameters required for creating the tracer using
 the `IOneAgentSdk` object. These additional pieces of information might be relevant for service detection and naming.
@@ -252,42 +258,7 @@ for the full list of examples (sync/async/lambda/exception/...)
 IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
 IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
-dbTracer.Start();
-try
-{
-    ExecuteDbCallVoid();
-}
-catch (Exception e)
-{
-    dbTracer.Error(e);
-    // handle or rethrow
-}
-finally
-{
-    dbTracer.End();
-}
-```
-
-**Example of an asynchronous database call (see [DatabaseRequestTracerSamples.cs](/sample/Dynatrace.OneAgent.Sdk.Sample/DatabaseRequestTracerSamples.cs) for more details):**
-
-```csharp
-IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
-IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
-
-await dbTracer.StartAsync();
-try
-{
-    await ExecuteDbCallVoidAsync();
-}
-catch (Exception e)
-{
-    dbTracer.Error(e);
-    // handle or rethrow
-}
-finally
-{
-    dbTracer.End();
-}
+dbTracer.Trace(() => ExecuteDbCallVoid());
 ```
 
 **Example of tracing database call in an async lambda expression (see [DatabaseRequestTracerSamples.cs](/sample/Dynatrace.OneAgent.Sdk.Sample/DatabaseRequestTracerSamples.cs) for more details):**
