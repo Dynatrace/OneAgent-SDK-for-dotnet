@@ -199,7 +199,7 @@ public static async Task SampleMethodAsync()
 ```
 
 The `Trace` method internally calls the `Start` method.
-In case of an exception it also call the `Error` method and it finally calls the `End` method.
+In case of an exception it also calls the `Error` method and it finally calls the `End` method.
 
 To summarize this, in case of
 
