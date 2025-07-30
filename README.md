@@ -143,13 +143,13 @@ If you call `Start()` in an async method, then with high probability the SDK won
 Sample usage:
 
 ```csharp
-public static async Task SampleMethodAsync()
+public static void SampleMethod()
 {
     IOneAgentSdk oneAgentSdk = OneAgentSdkFactory.CreateInstance();
     IDatabaseInfo dbInfo = oneAgentSdk.CreateDatabaseInfo("MyDb", "MyVendor", ChannelType.TCP_IP, "database.example.com:1234");
     IDatabaseRequestTracer dbTracer = oneAgentSdk.TraceSQLDatabaseRequest(dbInfo, "Select * From AA");
 
-    await dbTracer.Start();
+    dbTracer.Start();
     try
     {
         DatabaseApi.DatabaseCall();
