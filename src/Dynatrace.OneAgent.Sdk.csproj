@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Version>1.8.0</Version>
     <Authors>Dynatrace</Authors>
     <Product>Dynatrace OneAgent SDK for .NET</Product>
@@ -11,7 +11,7 @@ Requires Dynatrace OneAgent version 1.179 or newer installed.
 
 For further information (requirements, features, release notes) and samples see our readme on Github:
 https://github.com/Dynatrace/OneAgent-SDK-for-dotnet</Description>
-    <Copyright>Copyright 2019 Dynatrace LLC; Licensed under the Apache License, Version 2.0</Copyright>
+    <Copyright>Copyright 2025 Dynatrace LLC; Licensed under the Apache License, Version 2.0</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Dynatrace/OneAgent-SDK-for-dotnet</PackageProjectUrl>
     <PackageIconUrl>https://assets.dynatrace.com/global/resources/Signet_Logo_RGB_CP_512x512px.png</PackageIconUrl>
